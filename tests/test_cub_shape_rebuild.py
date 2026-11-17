@@ -9,12 +9,12 @@ import cv2
 import numpy as np
 import torch
 
-from cancha_cub import _preprocess_mask, _extract_contour_raw, _extract_geometric_features, get_shape_csv
-from audit_cub_shape_assets import audit_bank
+from aragpr.training import _preprocess_mask, _extract_contour_raw, _extract_geometric_features, get_shape_csv
+from tools.audit.audit_cub_shape_assets import audit_bank
 from data.Segments.scripts.utilities.segment import (
     asset_sha256, create_crops_masks, load_paired_mask_records,
 )
-from main_segment_1 import load_data, segmentation_paths
+from scripts.preprocessing.main_segment_1 import load_data, segmentation_paths
 from utils.dcbm_1 import ResidualTrainer
 from utils.sdr_cbm_visualize import SDRCBMVisualizer
 

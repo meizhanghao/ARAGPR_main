@@ -1,0 +1,1 @@
+run_id,dataset,prototype_id,reference_id,image_view,rank,term_id,candidate,cosine_similarity,clip_model_identifier,text_template,checkpoint_sha256

@@ -6,7 +6,7 @@ from types import SimpleNamespace
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 
-from run_cub_figure_candidates import (
+from tools.references.run_cub_figure_candidates import (
     PART_VOCAB, SourceLedger, bundle_asset, checked_decomposition, clip_screen,
     make_shortlist, rank_key, replay_logits, write_csv, write_json,
 )

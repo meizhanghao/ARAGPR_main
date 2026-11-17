@@ -10,6 +10,7 @@ runner uses an ordinary frozen CLIP linear classifier.
 [中文使用说明](docs/README_zh-CN.md) · [Data preparation](docs/DATA.md) ·
 [Experiment protocols](docs/PROTOCOLS.md) · [Entry points](docs/ENTRY_POINTS.md) ·
 [Visual guide](docs/VISUAL_GUIDE.md) ·
+[Prototype naming templates](docs/prototype_naming/README.md) ·
 [GitHub repository](https://github.com/meizhanghao/ARAGPR_main)
 
 ## Method
@@ -24,8 +25,10 @@ visual references; they do not localize evidence in a test image.
 `decoded` inference uses image embeddings without test masks. `oracle` is the
 legacy command-line name for **Direct teacher**, a mask-dependent diagnostic.
 `decoded_rel` is the optional validation-correlation-weighted variant.
-Legacy names such as `cancha_cub.py`, `GlobalCBM`, and `SDR-CBM` remain in Python
-identifiers and supporting scripts for compatibility with saved checkpoints.
+Legacy model classes such as `GlobalCBM` and `SDR-CBM` identifiers remain in
+the implementation. The model modules under `utils/` retain their paths for
+existing checkpoint loading; the former `cancha_cub.py` implementation is now
+`aragpr/training.py`, reached through `train.py`.
 
 ### Architecture: learn coordinates, then inspect the added scores
 
@@ -85,8 +88,7 @@ its official repository; a bundled copy of its source and weights is not include
 ## Quick check without datasets
 
 ```bash
-python -m unittest discover -s tests -v
-python -m unittest test_shape_mechanism test_cub_pairing_controls -v
+python -X utf8 -m unittest discover -s tests -v
 python -m aragpr demo --output outputs/synthetic_demo
 ```
 
@@ -117,7 +119,7 @@ supplied under `data/classes/`.
 
 The default layout is relative to the repository root. To keep data elsewhere,
 pass `--project-root /path/to/prepared_data` to `train.py` and
-`run_residual_controls.py`. For relocated cached feature manifests, set
+`experiments/controls/run_residual_controls.py`. For relocated cached feature manifests, set
 `ARAGPR_DATA_ROOT` to that same directory; recorded feature SHA256 checks remain
 active.
 
@@ -147,27 +149,27 @@ writes its checkpoint; use a separate working data directory for a new base fit.
 
 ```bash
 # Preflight: input checks only; no fitting or output directory creation.
-python run_residual_controls.py --datasets CUB_200_2011 derm7pt \
+python -m experiments.controls.run_residual_controls --datasets CUB_200_2011 derm7pt \
   --modes geometry affine --seeds 42 --output-root outputs/controls --dry-run
 
 # Fresh paired residual fits; also create the teacher caches used below.
-python run_residual_controls.py --datasets CUB_200_2011 derm7pt \
+python -m experiments.controls.run_residual_controls --datasets CUB_200_2011 derm7pt \
   --modes geometry random_projection affine shuffled_teacher \
   --seeds 42 43 44 --output-root outputs/controls
 
-python run_decoder_baselines.py --cache-root outputs/controls \
+python -m experiments.controls.run_decoder_baselines --cache-root outputs/controls \
   --datasets CUB_200_2011 derm7pt --output-root outputs/decoder_baselines
 
-python run_cub_pairing_controls.py --cache-root outputs/controls \
+python -m experiments.controls.run_cub_pairing_controls --cache-root outputs/controls \
   --output outputs/cub_pairing
-python run_derm7pt_mechanism.py --cache-root outputs/controls \
+python -m experiments.controls.run_derm7pt_mechanism --cache-root outputs/controls \
   --output outputs/derm_pairing
 
 # Use the model paths produced by those pairing runs.
-python run_posthoc_shape_diagnostics.py --help
-python run_teacher_alignment_audit.py --help
-python run_fixed_head_within_class.py --help
-python run_linear_probe_shape_transfer.py --help
+python -m experiments.diagnostics.run_posthoc_shape_diagnostics --help
+python -m experiments.diagnostics.run_teacher_alignment_audit --help
+python -m experiments.diagnostics.run_fixed_head_within_class --help
+python -m experiments.baselines.run_linear_probe_shape_transfer --help
 ```
 
 Choose a new output directory for each diagnostic run. Historical default names
@@ -188,7 +190,7 @@ Test targets are used only for the explicitly mask-dependent diagnostics.
 Keep the head, scale, standardization, and class contrast fixed for Teacher
 replacement; the separately fitted Direct teacher head is a different control.
 The retained medical partitions have the limitations discussed in the manuscript;
-`run_derm7pt_case_disjoint.py` provides a separate case-group experiment.
+`experiments/diagnostics/run_derm7pt_case_disjoint.py` provides a separate case-group experiment.
 
 L1 regularization does not guarantee exact zeros. Algebraic closure and visual
 references do not, by themselves, establish a purely geometric causal mechanism.
@@ -196,19 +198,38 @@ Auxiliary prototype names have no role in training, prediction, or attribution
 arithmetic. The naming pilot supplies CLIP candidate rankings; choosing a VLM
 and retaining its prompts/outputs is a separate naming step.
 
+## Auxiliary prototype naming
+
+The CLIP pilot is in `tools/naming/`. The [naming documentation](docs/prototype_naming/README.md)
+provides a GPT-4o selection prompt and empty CSV/JSON record templates for the
+CLIP Top-3 plus VLM workflow. Fill in the actual model identifier or access date,
+input references, vocabulary, rankings, rendered prompt and raw response when
+running it. These files are templates, not executed naming results. Auxiliary
+names do not alter model training, prediction or attribution scores.
+
 ## Project layout
 
 ```text
-aragpr/                  Public attribution and portable-path interfaces
-train.py                 Portable alias for cancha_cub.py
-utils/                   Existing model, controls and visualization implementation
-run_*.py                 Experiment and explanation-diagnostic runners
-data/classes/            Dataset class vocabularies
-data/Segments/scripts/   Region/embedding adapters, without vendored frameworks
+train.py                 Main training CLI
+aragpr/                  Training implementation, attribution and path helpers
+utils/                   Core model classes (stable checkpoint module paths)
+experiments/baselines/   Frozen classifiers and base-model training
+experiments/controls/    Residual fits, decoder and pairing controls
+experiments/diagnostics/ Fixed-model audits, grouping and result summaries
+scripts/preprocessing/   Dataset splits, segmentation and feature extraction
+tools/references/        Candidate selection and explanation-material exports
+tools/audit/             Shape-asset and saved-control integrity checks
+tools/naming/            CLIP candidate-ranking pilot
+tools/plotting/          Contribution plots and documentation figure exports
+data/                    Class vocabularies and region/embedding adapters
 tests/                   Dataset-free regression tests
-docs/                    Input formats, protocols, entry points and source provenance
-docs/assets/figures/     Selected manuscript illustrations and their source hashes
+docs/                    Input formats, protocols, migration map and provenance
+docs/prototype_naming/   GPT-4o prompt and empty reproducibility record templates
 ```
+
+Supporting commands use `python -m package.module` from the repository root.
+See the [entry-point map](docs/ENTRY_POINTS.md) for runnable commands and the
+[path migration list](docs/FILE_MIGRATIONS.json) for previous filenames.
 
 ## Citation and acknowledgements
 

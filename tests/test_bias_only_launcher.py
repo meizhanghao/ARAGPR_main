@@ -6,7 +6,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-import run_bias_only_remaining as launcher
+import experiments.controls.run_bias_only_remaining as launcher
 
 
 class LauncherCompatibilityTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class LauncherCompatibilityTests(unittest.TestCase):
             + "".join(f"p.add_argument({option!r}, action='store_true')\n" for option in options)
             + "p.parse_args()\n"
         )
-        (root / "cancha_cub.py").write_text(source, encoding="utf-8")
+        (root / "train.py").write_text(source, encoding="utf-8")
 
     def test_compatible_entry_point_only_reads_help(self):
         with tempfile.TemporaryDirectory() as directory:

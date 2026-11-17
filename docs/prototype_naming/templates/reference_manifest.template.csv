@@ -1,0 +1,1 @@
+run_id,dataset,prototype_id,bank_id,reference_id,source_split,source_image_key,source_image_path,marked_source_path,crop_path,contour_path,source_image_sha256,marked_source_sha256,crop_sha256,contour_sha256,selection_rule,additional_member_manifest

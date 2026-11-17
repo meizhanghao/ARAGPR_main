@@ -3,6 +3,11 @@ from pathlib import Path, PureWindowsPath
 import os
 
 
+def repository_root():
+    """Return the source checkout root, independently of the working directory."""
+    return Path(__file__).resolve().parents[1]
+
+
 def resolve_feature_file(value, *, anchor, dataset):
     """Find a recorded feature file; callers must still verify its saved hash.
 
@@ -17,7 +22,7 @@ def resolve_feature_file(value, *, anchor, dataset):
     roots = []
     if os.environ.get("ARAGPR_DATA_ROOT"):
         roots.append(Path(os.environ["ARAGPR_DATA_ROOT"]).expanduser())
-    roots.extend([Path.cwd(), Path(__file__).resolve().parents[1]])
+    roots.extend([Path.cwd(), repository_root()])
     candidates = [recorded] if recorded.is_absolute() else [anchor / recorded]
     for root in roots:
         if not recorded.is_absolute() and not PureWindowsPath(normalized).is_absolute():

@@ -1,4 +1,4 @@
-"""Portable alias for the original DCBM-platform shape-branch training entry."""
+"""Main training entry; implementation lives in :mod:`aragpr.training`."""
 import argparse
 import os
 from pathlib import Path
@@ -15,9 +15,8 @@ def main():
     if not root.is_dir():
         raise SystemExit(f"Project/data root does not exist: {root}")
     os.chdir(root)
-    script = Path(__file__).resolve().with_name("cancha_cub.py")
-    sys.argv = [str(script), *remaining]
-    runpy.run_path(str(script), run_name="__main__")
+    sys.argv = ["train.py", *remaining]
+    runpy.run_module("aragpr.training", run_name="__main__")
 
 
 if __name__ == "__main__":

@@ -39,7 +39,7 @@
 ```bash
 python -m pip install -r requirements.txt
 python -m aragpr doctor
-python -m unittest discover -s tests -v
+python -X utf8 -m unittest discover -s tests -v
 python -m aragpr demo --output outputs/synthetic_demo
 ```
 
@@ -76,3 +76,21 @@ python train.py --dataset derm7pt --use_shape --shape_input geo --K_shape 128 --
 无需把原工程、论文稿件、临时目录或数据集一起上传。
 远端仓库为 [meizhanghao/ARAGPR_main](https://github.com/meizhanghao/ARAGPR_main)。
 
+
+## 整理后的目录与运行方式
+
+根目录只保留 `train.py` 作为主训练入口；核心实现位于 `aragpr/training.py`。
+`experiments/` 下分别存放基线、拟合对照和固定模型诊断；预处理在
+`scripts/preprocessing/`；素材筛选、完整性核验、命名和绘图在 `tools/` 对应子目录。
+辅助入口从仓库根目录以 `python -m 包.模块` 运行，例如：
+
+```bash
+python -m experiments.controls.run_decoder_baselines --help
+python -m experiments.diagnostics.run_teacher_alignment_audit --help
+python -m tools.plotting.plot_contributions --help
+```
+
+完整命令见 [ENTRY_POINTS.md](ENTRY_POINTS.md)，旧新路径见
+[FILE_MIGRATIONS.json](FILE_MIGRATIONS.json)。
+命名所需的 [中文说明、GPT-4o 提示词和记录模板](prototype_naming/README_zh-CN.md)
+已集中存放；实际模型、日期、候选词、排序与输出需要按实际运行填写。

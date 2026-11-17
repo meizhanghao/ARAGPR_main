@@ -19,7 +19,7 @@ a ranked attribution result or an accuracy comparison. Red dashed lines
 connect a region to its source image.
 
 The branch receives a frozen image embedding and base logits. DCBM is the main
-experimental platform; `run_linear_probe_shape_transfer.py` uses an ordinary
+experimental platform; `experiments/baselines/run_linear_probe_shape_transfer.py` uses an ordinary
 frozen CLIP linear classifier through the same input interface.
 
 ## Training and inference have different inputs
@@ -50,7 +50,7 @@ reference class; it does not necessarily indicate high raw prototype
 similarity. Exact margin accounting is distinct from testing the learned
 correspondence to shape targets.
 
-**Code:** `train.py`, `cancha_cub.py`, `utils/residual_controls.py`, and
+**Code:** `train.py`, `aragpr/training.py`, `utils/residual_controls.py`, and
 [`aragpr/attribution.py`](../aragpr/attribution.py).
 
 ## Inspect several members of a prototype cluster
@@ -75,13 +75,13 @@ Panel (a) depicts auxiliary naming: CLIP ranks candidate phrases and a VLM
 selects or refines a name, or abstains. The displayed candidates illustrate the
 workflow. Names help readers navigate the references; they never enter training,
 prediction, or contribution arithmetic. The supplied
-`run_shape_naming_pilot.py` implements the CLIP-ranking step. A VLM call and its
+`tools/naming/run_shape_naming_pilot.py` implements the CLIP-ranking step. A VLM call and its
 prompt/output records are a separate step, rather than part of that script.
 
-**Code:** shape descriptor and bank construction in `cancha_cub.py`;
-reference exports in `run_figure_case_review.py` and
-`run_topk_reference_screen.py`; CLIP candidate ranking in
-`run_shape_naming_pilot.py`. These require locally prepared assets as described
+**Code:** shape descriptor and bank construction in `aragpr/training.py`;
+reference exports in `tools/references/run_figure_case_review.py` and
+`tools/references/run_topk_reference_screen.py`; CLIP candidate ranking in
+`tools/naming/run_shape_naming_pilot.py`. These require locally prepared assets as described
 in [DATA.md](DATA.md).
 
 ## Link all coordinate terms to selected visual references
@@ -131,9 +131,9 @@ Select correct predictions using ground-truth labels if reproducing the
 figure's correct-prediction cohort. The default interface instead compares
 final and base predictions, as used in the changed-prediction waterfalls below.
 
-**Code:** `run_cub_figure2_candidates.py`, `run_figure_case_review.py`,
+**Code:** `tools/references/run_cub_figure2_candidates.py`, `tools/references/run_figure_case_review.py`,
 [`aragpr/attribution.py`](../aragpr/attribution.py), and
-[`tools/plot_contributions.py`](../tools/plot_contributions.py).
+[`tools/plotting/plot_contributions.py`](../tools/plotting/plot_contributions.py).
 The plotting tool reads a contribution CSV: `--mode profile` draws all 128
 coordinates; `--mode bars` draws the Top-5 by default. Output SVGs are written
 alongside that plotting script. Font and weight settings are grouped at its top.
@@ -164,7 +164,7 @@ exploratory readouts.
 
 **Code:** `train.py --pinggu --explain_trace` for explanation traces;
 `utils/sdr_cbm_visualize.py` for the saved-run readout;
-`run_teacher_alignment_audit.py` for decision-level correspondence diagnostics.
+`experiments/diagnostics/run_teacher_alignment_audit.py` for decision-level correspondence diagnostics.
 
 ## Follow validation behavior across residual scales
 
@@ -176,7 +176,7 @@ indicates the best validation epoch. Vertical scales differ between panels.
 The figure helps inspect fitting and scale selection; it is not a test-set
 ranking or an explanation-stability measurement.
 
-**Code:** `train.py` / `cancha_cub.py` with the scale and training options shown
+**Code:** `train.py` / `aragpr/training.py` with the scale and training options shown
 by `--help`. The exact manuscript curves require their original training logs;
 those run artifacts are not included in this source release.
 
@@ -192,7 +192,7 @@ To re-export from your local standalone manuscript figure PDFs:
 
 ```bash
 python -m pip install -r requirements-docs.txt
-python tools/export_paper_figures.py --source-dir /path/to/manuscript
+python -m tools.plotting.export_paper_figures --source-dir /path/to/manuscript
 ```
 
 The optional documentation dependencies are separate from the core training

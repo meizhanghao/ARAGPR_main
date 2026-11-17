@@ -11,7 +11,7 @@ import numpy as np
 import torch
 from PIL import Image
 
-from cancha_cub import _preprocess_mask, _extract_contour_raw, _extract_geometric_features
+from aragpr.training import _preprocess_mask, _extract_contour_raw, _extract_geometric_features
 from utils.dcbm_1 import ResidualTrainer
 from utils.sdr_cbm_visualize import SDRCBMVisualizer
 

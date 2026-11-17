@@ -1,8 +1,8 @@
 """
 SDR-CBM Visualization — contribution decomposition, co-occurrence matrix, text reports.
 
-Usage (via cancha_cub.py --viz):
-    python cancha_cub.py ... --viz --viz_split test --viz_indices 0 10 25
+Usage (via train.py --viz):
+    python train.py ... --viz --viz_split test --viz_indices 0 10 25
 """
 import csv
 import hashlib

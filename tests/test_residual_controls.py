@@ -84,10 +84,10 @@ class ResidualControlTests(unittest.TestCase):
                          min(fitted["history"], key=lambda r: r["val_loss"])["epoch"])
 
     def test_existing_output_is_rejected_before_training(self):
-        runner = Path(__file__).resolve().parents[1] / "run_residual_controls.py"
+        root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as directory:
-            result = subprocess.run([sys.executable, str(runner), "--output-root", directory,
-                                     "--dry-run"], capture_output=True, text=True,
+            result = subprocess.run([sys.executable, "-m", "experiments.controls.run_residual_controls", "--output-root", directory,
+                                     "--dry-run"], cwd=root, capture_output=True, text=True,
                                     encoding="utf-8", errors="replace")
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("Preserve existing results", result.stderr)

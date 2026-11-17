@@ -1,0 +1,12 @@
+{
+  "record_status": "template_not_executed",
+  "prototype_id": null,
+  "reference_id": null,
+  "decision": null,
+  "chosen_candidate_rank": null,
+  "name": null,
+  "visible_support": null,
+  "limitations": null,
+  "raw_response_path": null,
+  "rendered_prompt_path": null
+}

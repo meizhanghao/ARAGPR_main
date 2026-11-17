@@ -1,0 +1,43 @@
+You are assigning an auxiliary, visually grounded name to a geometric prototype's training reference. Describe the visible region, not the classifier's decision.
+
+INPUT METADATA
+Dataset: {{dataset}}
+Prototype ID: {{prototype_id}}
+Reference ID: {{reference_id}}
+
+CLIP TOP-3 CANDIDATES
+1. {{candidate_1}}; cosine similarity: {{score_1}}
+2. {{candidate_2}}; cosine similarity: {{score_2}}
+3. {{candidate_3}}; cosine similarity: {{score_3}}
+
+ATTACHED IMAGES, IN ORDER
+Image 1: The training source image with the reference region marked.
+Image 2: The RGB crop of that region, using the recorded mask/crop convention.
+Image 3: The contour extracted from the same mask.
+Optional additional images: Recorded members of the same prototype cluster, explicitly identified as such.
+
+TASK
+Choose the candidate that best describes the marked region's visible content and outline. The CLIP ranking is a proposal, not a probability or a requirement to choose rank 1. If useful, refine a candidate into a short noun phrase combining an identifiable part/object and observable shape. Use approximately 2-6 English words. If none is supported, abstain; do not force a plausible-sounding name.
+
+RULES
+- Use the full image to locate the region, the crop to identify its content, and the contour to check the shape description. Do not assign nearby content to the marked region.
+- For bird images, identify a visible part only when supported; avoid a species-specific claim based on the dataset or image class.
+- For skin images, describe visible region morphology, not malignancy, diagnosis or clinical meaning.
+- For scene images, name an object only when identifiable; otherwise use a simple outline description.
+- Do not use color/texture to invent an unsupported geometric property.
+- A representative reference does not establish semantic purity of its cluster. If supplied members conflict, record that limitation rather than treating them as identical.
+- The label helps a reader inspect training-reference content. It does not participate in training, prediction or contribution calculation, and does not establish localization in a test image.
+- Return one JSON object only. Use null for an unavailable name or candidate rank. Do not append a prototype ID to the name; it will be displayed separately.
+
+OUTPUT SCHEMA
+{
+  "prototype_id": "{{prototype_id}}",
+  "reference_id": "{{reference_id}}",
+  "decision": "selected | refined | abstained",
+  "chosen_candidate_rank": "integer 1-3, or null",
+  "name": "short English noun phrase, or null",
+  "visible_support": "One concise sentence referring to observed content and outline.",
+  "limitations": "One concise sentence, or null if none was observed."
+}
+
+Do not supply confidence percentages or claim expert validation. If the images do not support a candidate, set decision to abstained and name to null.

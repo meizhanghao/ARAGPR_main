@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 import torch
 
-from run_linear_probe_shape_transfer import fit_linear_probe, margin_replay
+from experiments.baselines.run_linear_probe_shape_transfer import fit_linear_probe, margin_replay
 from utils.residual_controls import apply_affine_map
 
 

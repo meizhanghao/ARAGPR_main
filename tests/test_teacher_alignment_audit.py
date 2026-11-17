@@ -3,7 +3,7 @@ import unittest
 
 import numpy as np
 
-from run_teacher_alignment_audit import summarize_alignment
+from experiments.diagnostics.run_teacher_alignment_audit import summarize_alignment
 
 
 class AlignmentTests(unittest.TestCase):

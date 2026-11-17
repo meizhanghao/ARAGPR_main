@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 from sklearn.metrics import mean_squared_error, r2_score
 
-from run_decoder_baselines import fidelity_metrics
+from experiments.controls.run_decoder_baselines import fidelity_metrics
 
 
 class DecoderBaselineMetricsTests(unittest.TestCase):

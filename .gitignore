@@ -60,7 +60,7 @@ data/Segments/Seg_embs/
 *.docx
 *.pptx
 *.xlsx
-tools/*.svg
+tools/**/*.svg
 
 # Explicitly selected manuscript illustrations used by the documentation.
 # Keep raw dataset/reference-image banks excluded by the rules above.

@@ -2,7 +2,7 @@
 import numpy as np
 import unittest
 
-from run_posthoc_shape_diagnostics import compose_affine, compose_input_scaler, fixed_contributions, ranked_alignment
+from experiments.diagnostics.run_posthoc_shape_diagnostics import compose_affine, compose_input_scaler, fixed_contributions, ranked_alignment
 
 
 def test_composition_keeps_both_biases_and_nonidentity_coordinate_scaler():

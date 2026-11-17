@@ -44,7 +44,7 @@ prepared-data root when using `--project-root`.
 
 The original DCBM training path additionally uses semantic segment embeddings,
 segmentation statistics and its selected subset. The exact dataset-specific
-paths are returned by `cancha_cub.load_dataset_info()`. A residual-only control
+paths are returned by `aragpr.training.load_dataset_info()`. A residual-only control
 with an existing frozen checkpoint does not load the complete semantic segment
 embedding collection.
 
@@ -66,7 +66,7 @@ ambiguous. Training-fitted scalers are reused for validation and test images.
 
 ### Shape descriptor CSVs
 
-Use `cancha_cub.get_shape_csv()` to construct descriptors from masks, including
+Use `aragpr.training.get_shape_csv()` to construct descriptors from masks, including
 the cleaned largest outer contour. The existing CSV format starts with a segment
 identifier followed by the descriptor coordinates. Strict assets append paired
 mask/crop relative paths and hashes. Descriptor dimensions are FD32, geo11,
@@ -77,8 +77,8 @@ separately prepared, verified CUB CSV, pass `--cub-shape-csv /path/to/file.csv`.
 For the other datasets use `--shape-csv-dir`. Do not reconstruct a binary region
 by thresholding an RGB crop that has lost the original segmentation mask.
 
-The preprocessing routines are `main_segment_1.py`,
-`main_image_emb_to_clip_4.py`, and `main_segimage_emb_to_clip_2.py`. These require
+The preprocessing routines are `scripts/preprocessing/main_segment_1.py`,
+`scripts/preprocessing/main_image_emb_to_clip_4.py`, and `scripts/preprocessing/main_segimage_emb_to_clip_2.py`. These require
 the optional CLIP/SAM2 dependencies and the original dataset metadata. They are
 not run by importing the public attribution interface. SAM2 checkpoints are
 downloaded only when segmentation is explicitly executed and weights are absent.
@@ -96,7 +96,7 @@ their hashes. The repository contains no external model checkpoints.
 
 ## Derived teacher caches
 
-`run_residual_controls.py` creates a directory for each dataset containing:
+`experiments/controls/run_residual_controls.py` creates a directory for each dataset containing:
 
 - `dataset.json`: class order, source hashes, membership hashes and coverage;
 - `input_scaler.pt` and `teacher_bank.pt`: training-fitted preprocessing/bank;
@@ -119,7 +119,7 @@ Missing or changed features are errors rather than silently substituted data.
 
 The original retained image partitions and a fresh case-disjoint experiment are
 different studies. Do not label the image partitions as patient-disjoint.
-`run_derm7pt_case_disjoint.py` requires the original Derm7pt case metadata and
+`experiments/diagnostics/run_derm7pt_case_disjoint.py` requires the original Derm7pt case metadata and
 rebuilds the affected training statistics for its new grouped split.
 Keep any restricted image-membership or patient metadata outside the public repo.
 

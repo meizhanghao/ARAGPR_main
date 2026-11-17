@@ -1,0 +1,43 @@
+{
+  "record_status": "template_not_executed",
+  "run_id": null,
+  "created_at_utc": null,
+  "reference_bank_id": null,
+  "reference_selection_rule": null,
+  "candidate_vocabulary_version": null,
+  "candidate_vocabulary_sha256": null,
+  "clip": {
+    "implementation": null,
+    "model_identifier": null,
+    "checkpoint_sha256": null,
+    "input_view": null,
+    "image_preprocessing": null,
+    "text_template": null,
+    "embedding_normalization": null,
+    "ranking_metric": null,
+    "top_k": null,
+    "tie_break_rule": null,
+    "software_versions": {}
+  },
+  "vlm": {
+    "provider": null,
+    "model_family": "GPT-4o",
+    "actual_model_identifier": null,
+    "backend_snapshot_if_exposed": null,
+    "interface_or_api": null,
+    "accessed_at_utc": null,
+    "parameters_actually_set_or_exposed": {},
+    "prompt_template_sha256": null,
+    "rendered_prompts_directory": null,
+    "raw_responses_directory": null
+  },
+  "posthoc_human_inspection": {
+    "performed": null,
+    "protocol_or_notes": null
+  },
+  "execution_checks": {
+    "training_references_verified": null,
+    "prediction_and_contribution_values_withheld_from_naming": null,
+    "classifier_artifacts_unchanged": null
+  }
+}
