@@ -1,0 +1,18 @@
+{
+  "purpose": "Observed local verification environment; not a lockfile or minimum-version guarantee.",
+  "python": "3.10.8",
+  "platform": "Windows x86_64",
+  "dependencies": {
+    "numpy": "2.2.6",
+    "torch": "2.13.0+cu132",
+    "pandas": "2.3.3",
+    "scipy": "1.15.3",
+    "scikit-learn": "1.7.2",
+    "opencv-python": "4.13.0.92",
+    "Pillow": "12.2.0",
+    "matplotlib": "3.10.9",
+    "threadpoolctl": "3.6.0",
+    "tqdm": "4.68.4"
+  },
+  "optional_dependencies_needed_by_core_tests": false
+}

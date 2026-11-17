@@ -1,0 +1,98 @@
+{
+  "manuscript_title": "Auditing Residual Attribution with Geometric Prototype References",
+  "transformation": "Complete figure page rendered to RGB PNG; no edits to panels, labels or values.",
+  "scope": "Curated manuscript illustrations only; not a dataset or checkpoint release.",
+  "figures": [
+    {
+      "manuscript_figure": 1,
+      "source_file": "fig1.pdf",
+      "source_sha256": "755bb33edae0f13b47d33c4b3e41d7a053e51121ac0a3b886ca826dcda850bf4",
+      "documentation_image": "residual_interfaces.png",
+      "image_sha256": "69885fca16b5a1683d2c3786dc734a6c7d8290da42006abc74a4279441ee2b0f",
+      "image_size_px": [
+        2200,
+        842
+      ],
+      "image_bytes": 826182,
+      "title": "Residual interfaces and geometric references"
+    },
+    {
+      "manuscript_figure": 2,
+      "source_file": "fig2.pdf",
+      "source_sha256": "95e469fd9b47ad49121fc7e768080366731ef3aeccc0065ae084dec34098e618",
+      "documentation_image": "framework.png",
+      "image_sha256": "2b0bde7fe09173414b69998c232c2313a364cbfc65851de3db0ae75df617cd32",
+      "image_size_px": [
+        2400,
+        1406
+      ],
+      "image_bytes": 1467072,
+      "title": "Training, mask-free inference, and attribution readout"
+    },
+    {
+      "manuscript_figure": 3,
+      "source_file": "residual_behavior_journal_decoded.pdf",
+      "source_sha256": "dfa6b59fcdef74729421a8019efe76287c220f2df97b74ed6bc89c6d0e584deb",
+      "documentation_image": "residual_dynamics.png",
+      "image_sha256": "32aa6f6e77bc64c07b70a7015ff8f37d4ba51657c7b99cde1d01f40720d276a7",
+      "image_size_px": [
+        2000,
+        910
+      ],
+      "image_bytes": 199274,
+      "title": "Decoded validation residual dynamics"
+    },
+    {
+      "manuscript_figure": 4,
+      "source_file": "prototype_naming_clusters.pdf",
+      "source_sha256": "442566188debd9019f9350644154ceab28b705adfeb31ec27f39c143c6e8e63f",
+      "documentation_image": "prototype_clusters.png",
+      "image_sha256": "a3a1b6645e3437558bc8b71a4139557ca21d0bbccdc8221e1bb359bd3499e3d5",
+      "image_size_px": [
+        2800,
+        1575
+      ],
+      "image_bytes": 2373348,
+      "title": "Prototype inspection and auxiliary naming"
+    },
+    {
+      "manuscript_figure": 5,
+      "source_file": "prototype_contribution_audit.pdf",
+      "source_sha256": "df49db486c4033b49dd412225c2bac2bebe67faab17073e32f21faa23cd6a952",
+      "documentation_image": "contribution_audit.png",
+      "image_sha256": "ac2d8c5f9bd73bb785e85f69181fd7f21c351e77b875e70dc9360246a6d79af2",
+      "image_size_px": [
+        2600,
+        1703
+      ],
+      "image_bytes": 1259714,
+      "title": "Complete coordinate profiles and Top-5 references"
+    },
+    {
+      "manuscript_figure": 6,
+      "source_file": "qualitative_corrections.pdf",
+      "source_sha256": "a5f7e58cd3e77c583994095ff1e6ab9f7a0382e0a095c20b30d04513a52bd222",
+      "documentation_image": "corrected_predictions.png",
+      "image_sha256": "fea6eccf587ed9856a1cf1321b26637a5438da554e48845a7e3eb492f7d3ca54",
+      "image_size_px": [
+        2200,
+        1221
+      ],
+      "image_bytes": 611826,
+      "title": "Corrected predictions and signed margin decompositions"
+    },
+    {
+      "manuscript_figure": 7,
+      "source_file": "qualitative_harmful_changes.pdf",
+      "source_sha256": "a854a15c32dcc571a2541c6f0f0756d096aacf5fc55846b8e2b4397fbf1ac7fc",
+      "documentation_image": "harmful_changes.png",
+      "image_sha256": "3090171bf8aab080ec2fa2ed8944b701e060846e7c163b64e50ba80a810e85fb",
+      "image_size_px": [
+        2200,
+        1221
+      ],
+      "image_bytes": 624953,
+      "title": "Harmful prediction changes and signed margin decompositions"
+    }
+  ]
+}

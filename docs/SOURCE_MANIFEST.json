@@ -1,0 +1,414 @@
+{
+  "snapshot_date": "2026-11-17",
+  "source_project": "DCBM-main (local research implementation)",
+  "scope": "Source code, class vocabularies, documentation, and selected manuscript figure montages; no raw datasets, cached tensors, checkpoints or historical run outputs.",
+  "adaptations": [
+    "Portable local-path examples",
+    "Externally installed SAM2 with lazy imports",
+    "Portable feature-cache path resolution with existing SHA256 checks retained",
+    "Public project description; legacy Python names retained",
+    "Portable Derm7pt metadata lookup with a synthetic metadata unit fixture",
+    "Optional-framework-free CLIP unit fixture",
+    "Portable font fallback in the naming review sheet",
+    "LF line endings for source files"
+  ],
+  "files": [
+    {
+      "path": "audit_cub_shape_assets.py",
+      "source_sha256": "7f0173e915a8574eca130756e924679c686b27fcbd0f2c37d14c57500025ddfb",
+      "adapted": false,
+      "release_sha256": "7f0173e915a8574eca130756e924679c686b27fcbd0f2c37d14c57500025ddfb"
+    },
+    {
+      "path": "audit_residual_controls.py",
+      "source_sha256": "eac9e175a893af91edc922471966495174b69a2da1a6f810878a311c28ac8b68",
+      "adapted": false,
+      "release_sha256": "eac9e175a893af91edc922471966495174b69a2da1a6f810878a311c28ac8b68"
+    },
+    {
+      "path": "cancha_cub.py",
+      "source_sha256": "c01291ed8a2da2f483b2a75a7cde7e15bd4adab408a4378c281301d15abc7ddd",
+      "adapted": true,
+      "release_sha256": "b016aaf39f0bbd5d0a3ccf592d09264e6b81e78ee81e822c1f1c44cbfc529dbc"
+    },
+    {
+      "path": "clip_zero_image.py",
+      "source_sha256": "2150e1e273baae8d8ed91888570a7a144d4a865fd50a4f536ca4167dcfd42f21",
+      "adapted": true,
+      "release_sha256": "7c22f1d19951cbac04d19521faae1985a6d6f5d8bdce10d5a00980ea2bcd7679"
+    },
+    {
+      "path": "data/classes/BUS_UCLM_classes.txt",
+      "source_sha256": "1aab0393ba9e27f355d6e508247ace1ea46d21b140e912ceae17abef52cf478a",
+      "adapted": false,
+      "release_sha256": "1aab0393ba9e27f355d6e508247ace1ea46d21b140e912ceae17abef52cf478a"
+    },
+    {
+      "path": "data/classes/cub_classes.txt",
+      "source_sha256": "66a884364a73edde6c71eeb7fd5d8bb791e80979b64759bd6a5d5d209bdc02ba",
+      "adapted": false,
+      "release_sha256": "66a884364a73edde6c71eeb7fd5d8bb791e80979b64759bd6a5d5d209bdc02ba"
+    },
+    {
+      "path": "data/classes/derm7pt_classes.txt",
+      "source_sha256": "09fcceb5c04948ab4c700bdbd052ee884850546c3585e2991906afb758fe0894",
+      "adapted": false,
+      "release_sha256": "09fcceb5c04948ab4c700bdbd052ee884850546c3585e2991906afb758fe0894"
+    },
+    {
+      "path": "data/classes/ISIC-2019_classes.txt",
+      "source_sha256": "af46bbbf05dce28217d040f466682568ad37694969bef16a11576b2c38ca4f82",
+      "adapted": false,
+      "release_sha256": "af46bbbf05dce28217d040f466682568ad37694969bef16a11576b2c38ca4f82"
+    },
+    {
+      "path": "data/classes/places365_part_classes.txt",
+      "source_sha256": "2cfed682675873cea050e14d2b1186f36bc5b7cef1abdfa841c4754765accee3",
+      "adapted": false,
+      "release_sha256": "2cfed682675873cea050e14d2b1186f36bc5b7cef1abdfa841c4754765accee3"
+    },
+    {
+      "path": "data/Segments/scripts/utilities/__init__.py",
+      "source_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "adapted": false,
+      "release_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "data/Segments/scripts/utilities/CLIP.py",
+      "source_sha256": "5227d3b5928257bd12a2bb862a9afea81e9d714f59f880df39c6a4ab2ef2ee16",
+      "adapted": false,
+      "release_sha256": "5227d3b5928257bd12a2bb862a9afea81e9d714f59f880df39c6a4ab2ef2ee16"
+    },
+    {
+      "path": "data/Segments/scripts/utilities/data_loading.py",
+      "source_sha256": "b1943939e803227deec68c736bf5ed5f7a78e66169230d98cda6be2d77972a9a",
+      "adapted": true,
+      "release_sha256": "f97f91b24720e0768497deb16ba27e472f5fbe93da56105b6bc71c5e720da774"
+    },
+    {
+      "path": "data/Segments/scripts/utilities/SAM2.py",
+      "source_sha256": "cb97849ea28262e465dc1516ae3c41e5c7c10ea68ea0cd83727b7544f912cd8f",
+      "adapted": true,
+      "release_sha256": "2044d021bbaa891c8f1c34ef2cb1de820d8d6732d544ec4f6c397572521aa77e"
+    },
+    {
+      "path": "data/Segments/scripts/utilities/segment.py",
+      "source_sha256": "2faeb45e2ebe8f1e3682c92f99b5cd9c9f664a721e8ac6d300b11f9168d95adb",
+      "adapted": false,
+      "release_sha256": "2faeb45e2ebe8f1e3682c92f99b5cd9c9f664a721e8ac6d300b11f9168d95adb"
+    },
+    {
+      "path": "dcbm_seglocal_cub.py",
+      "source_sha256": "8b41fd2a5dcef6c6c2250f5d2595d6dd4c69fef02babd7aab68e812ec93fe741",
+      "adapted": true,
+      "release_sha256": "415638779947bfb7639882e0919242193b3702b3f21b42b05c0c08faddacd490"
+    },
+    {
+      "path": "experiments/dcbm_testing.py",
+      "source_sha256": "b27decbc2d130f6f62fa9ccd7bff22f94940b3b49167c5ec00f5bf236ddcb98e",
+      "adapted": false,
+      "release_sha256": "b27decbc2d130f6f62fa9ccd7bff22f94940b3b49167c5ec00f5bf236ddcb98e"
+    },
+    {
+      "path": "extract_position_features.py",
+      "source_sha256": "d63ab288494e7c2ad4e2f5f4b0c3af3b6677be0b3e5dbf326031bc55008155a6",
+      "adapted": false,
+      "release_sha256": "d63ab288494e7c2ad4e2f5f4b0c3af3b6677be0b3e5dbf326031bc55008155a6"
+    },
+    {
+      "path": "image_all_emb_to_clip.py",
+      "source_sha256": "d3be0e9b86146ffb05874a0265fb6bfefa356e6aae0b56c850603fee2229ccdb",
+      "adapted": true,
+      "release_sha256": "dbc392a92e21cff7b5ebd986b6401098ba5fc55ec1723a164980012549f635e1"
+    },
+    {
+      "path": "linear_probe_all.py",
+      "source_sha256": "ff28c7796097f157f028dc9de60155edec9f0730a73dc1546b89b7e279c3d728",
+      "adapted": false,
+      "release_sha256": "ff28c7796097f157f028dc9de60155edec9f0730a73dc1546b89b7e279c3d728"
+    },
+    {
+      "path": "main_create_traintestval_3.py",
+      "source_sha256": "08154cee2160a9f4a6c9275dafa1202843b551ecca3f39dd308df9388761cf8d",
+      "adapted": true,
+      "release_sha256": "415c3a8a6819e21aa958a74d2b8b0c5a16d229f142295a3a346f0b27bedc485e"
+    },
+    {
+      "path": "main_create_trainval_3.py",
+      "source_sha256": "f8ae940c9187d73cc79acac9655170971ee86ae8ed9b988dc7477a0528d63cec",
+      "adapted": true,
+      "release_sha256": "c164c5a8f017606dd91f85a1859280b3d83a6b63882150455bf958b788f43acc"
+    },
+    {
+      "path": "main_dcbm_5.py",
+      "source_sha256": "d71d4108fc4d07c166bfda175614efd008d5d8c9f28179cf517d823702301c71",
+      "adapted": true,
+      "release_sha256": "2841ff5beeeb0d634ad77848cbc18713a38240b590b7f0ec462790344f274758"
+    },
+    {
+      "path": "main_image_emb_to_clip_4.py",
+      "source_sha256": "062d14a976f1b61817f59ed2879419ec6ca4a3bad3fde6e1e65361a9491ce91f",
+      "adapted": false,
+      "release_sha256": "062d14a976f1b61817f59ed2879419ec6ca4a3bad3fde6e1e65361a9491ce91f"
+    },
+    {
+      "path": "main_segimage_emb_to_clip_2.py",
+      "source_sha256": "1573dadef6c3fc60e80d384969b51a3e554fb7843862a2165988d046ace5ccd4",
+      "adapted": true,
+      "release_sha256": "2e807026541999deac9e5df0be8161a0d97029be400d4a995c39477b72181fda"
+    },
+    {
+      "path": "main_segment_1.py",
+      "source_sha256": "c66f1bf2938550230c74aa6efabe752d8550de87157b147d23c3b5235395c1d8",
+      "adapted": true,
+      "release_sha256": "d20e5e4927b827270a92c3c673e82321c8a8958fe7561ce9f43767bbab662082"
+    },
+    {
+      "path": "main_train_DCBM_cub.py",
+      "source_sha256": "8d6e2b3d76d6ed05108fd526ba4ee05b9254469761fe1d9de11bc0ae9630d14f",
+      "adapted": false,
+      "release_sha256": "8d6e2b3d76d6ed05108fd526ba4ee05b9254469761fe1d9de11bc0ae9630d14f"
+    },
+    {
+      "path": "replay_bias_only.py",
+      "source_sha256": "c2386a2d2ec80ec40251b42dc820a5ca59d5e38081771adccf9d7a95fde0666f",
+      "adapted": false,
+      "release_sha256": "c2386a2d2ec80ec40251b42dc820a5ca59d5e38081771adccf9d7a95fde0666f"
+    },
+    {
+      "path": "run_bias_only_remaining.py",
+      "source_sha256": "09d9a693488bb8f5ec8a525aa324b713625aecbe7b2157385c79c82b013597ae",
+      "adapted": false,
+      "release_sha256": "09d9a693488bb8f5ec8a525aa324b713625aecbe7b2157385c79c82b013597ae"
+    },
+    {
+      "path": "run_cub_figure2_candidates.py",
+      "source_sha256": "5bb545a7da1b1a105021e5165f233a5468a1c48484df76e5f42160af8605f8e7",
+      "adapted": false,
+      "release_sha256": "5bb545a7da1b1a105021e5165f233a5468a1c48484df76e5f42160af8605f8e7"
+    },
+    {
+      "path": "run_cub_figure_candidates.py",
+      "source_sha256": "00e3c114a89b1896e352565491fbfb35cca21b25944a73f7454d590988648b11",
+      "adapted": false,
+      "release_sha256": "00e3c114a89b1896e352565491fbfb35cca21b25944a73f7454d590988648b11"
+    },
+    {
+      "path": "run_cub_pairing_controls.py",
+      "source_sha256": "655089d4978fde828dd6c30cb15bdf5a91cb31c16fa45f8b82b5dac657d8481b",
+      "adapted": false,
+      "release_sha256": "655089d4978fde828dd6c30cb15bdf5a91cb31c16fa45f8b82b5dac657d8481b"
+    },
+    {
+      "path": "run_decoder_baselines.py",
+      "source_sha256": "a754c50f72b61d407cfb642308b2189264a7e62541c5fc6db7c408207e7e6215",
+      "adapted": true,
+      "release_sha256": "6d618469fff7877c92bddd6f01cbbb4d1dcb91d00abb4b4fe341ba3d59e526ac"
+    },
+    {
+      "path": "run_derm7pt_case_disjoint.py",
+      "source_sha256": "2efbac46cd62b5571da4cd4e8404670a976629f88e6557125f5c81cd59b3448c",
+      "adapted": false,
+      "release_sha256": "2efbac46cd62b5571da4cd4e8404670a976629f88e6557125f5c81cd59b3448c"
+    },
+    {
+      "path": "run_derm7pt_mechanism.py",
+      "source_sha256": "f8a5bfd53a7c281cc9afbdfa562782d892b0681b853c372503d6cd6ed8a8c670",
+      "adapted": true,
+      "release_sha256": "3beeda71664c85e96c4daaf54bbf52f9d0f3ebab3e50e1dfc43636fe86f68896"
+    },
+    {
+      "path": "run_derm7pt_perturbations.py",
+      "source_sha256": "0f1ebf20cdfc7f4ee851da899950385a7b56de5391ab41253ec451bedb003778",
+      "adapted": true,
+      "release_sha256": "26f80de933c4517599b0cf806c74d5c7ff7388364c0bebbd427376035610cf4d"
+    },
+    {
+      "path": "run_figure_case_review.py",
+      "source_sha256": "d76be3ea5b7227b5466512eb47d896461f9af48b0d1b64d51eb6ac7ecba3b61e",
+      "adapted": false,
+      "release_sha256": "d76be3ea5b7227b5466512eb47d896461f9af48b0d1b64d51eb6ac7ecba3b61e"
+    },
+    {
+      "path": "run_fixed_head_within_class.py",
+      "source_sha256": "8bf24ae5b1c661c8801d3e45964dd6594da023f175700bba46e643d1c51dce60",
+      "adapted": false,
+      "release_sha256": "8bf24ae5b1c661c8801d3e45964dd6594da023f175700bba46e643d1c51dce60"
+    },
+    {
+      "path": "run_linear_probe_shape_transfer.py",
+      "source_sha256": "18e1e49d02ecbd15de00e88368a5d66d544ffc4092409d2c4cbe816bca4f8100",
+      "adapted": false,
+      "release_sha256": "18e1e49d02ecbd15de00e88368a5d66d544ffc4092409d2c4cbe816bca4f8100"
+    },
+    {
+      "path": "run_posthoc_shape_diagnostics.py",
+      "source_sha256": "cda1efe9250662d274db5d3732e5453490ba14cec085e2071b21c99b8b4fe7b4",
+      "adapted": false,
+      "release_sha256": "cda1efe9250662d274db5d3732e5453490ba14cec085e2071b21c99b8b4fe7b4"
+    },
+    {
+      "path": "run_residual_controls.py",
+      "source_sha256": "d7334c4286634656482d7700d0711ac1162783e00ab18ff1af956d56cca76272",
+      "adapted": false,
+      "release_sha256": "d7334c4286634656482d7700d0711ac1162783e00ab18ff1af956d56cca76272"
+    },
+    {
+      "path": "run_shape_naming_pilot.py",
+      "source_sha256": "d2d1e240416330e9fa2f1c9662cfe86e66530e12d4b5216ac9bf5b3b7273b636",
+      "adapted": true,
+      "release_sha256": "51f142365d2ece4d15dce81e7dd19c6491d5e7f2a9d46e3c9010e276a193cbea"
+    },
+    {
+      "path": "run_teacher_alignment_audit.py",
+      "source_sha256": "176410118140bf289ff40a9a9e9f9f5e459ad8425258f7809fba868f483bad52",
+      "adapted": false,
+      "release_sha256": "176410118140bf289ff40a9a9e9f9f5e459ad8425258f7809fba868f483bad52"
+    },
+    {
+      "path": "run_topk_reference_screen.py",
+      "source_sha256": "ece56fc965efe96a62eb16710b62a23d6b90b69c1bee6e5f7d3617a761b9f554",
+      "adapted": false,
+      "release_sha256": "ece56fc965efe96a62eb16710b62a23d6b90b69c1bee6e5f7d3617a761b9f554"
+    },
+    {
+      "path": "sam2_contour.py",
+      "source_sha256": "53fb08dde1a605e1a27c2ebc7a6c7b92058dcfbc5b2ffc8e518ba84c2859f5a0",
+      "adapted": true,
+      "release_sha256": "425941fa3f4239a8ffdb30eaa3a3842d93db154498fba29a15c9b5277fe7a705"
+    },
+    {
+      "path": "summarize_derm7pt_mechanism.py",
+      "source_sha256": "27502926e1386767229e502c8f14c87d6fc11db346ffebb1cc6703d251dd50a7",
+      "adapted": true,
+      "release_sha256": "34b70f3c2761ce94feb1211ff05451fca481a35b7ef890cfddd9c9b2d83a9e0a"
+    },
+    {
+      "path": "summarize_pairing_controls_20261020.py",
+      "source_sha256": "4546323d85911880fbc86ed4b81a95ad99531f07da0ce1343e8071f53cc56e66",
+      "adapted": false,
+      "release_sha256": "4546323d85911880fbc86ed4b81a95ad99531f07da0ce1343e8071f53cc56e66"
+    },
+    {
+      "path": "test_cub_pairing_controls.py",
+      "source_sha256": "ab595782cba236f5fddc8df4abcf8d5bc0eec29b811c5185da2ee74e3e31a23e",
+      "adapted": false,
+      "release_sha256": "ab595782cba236f5fddc8df4abcf8d5bc0eec29b811c5185da2ee74e3e31a23e"
+    },
+    {
+      "path": "test_shape_mechanism.py",
+      "source_sha256": "d144faaa00da93eb8d4b755006ce20fd43bfdb8f807e87268db248dcbc669453",
+      "adapted": true,
+      "release_sha256": "c0d19a7f0382636e29739f31fde91f87b5be3647d2dc033d8b88e799f007078e"
+    },
+    {
+      "path": "tests/test_bias_only.py",
+      "source_sha256": "e4b5b639cc98f1c135b34340ea1b4220aa3880e6ee7c1d13fc449547f51b4087",
+      "adapted": false,
+      "release_sha256": "e4b5b639cc98f1c135b34340ea1b4220aa3880e6ee7c1d13fc449547f51b4087"
+    },
+    {
+      "path": "tests/test_bias_only_launcher.py",
+      "source_sha256": "97ba522ecadd4ca0f18aaf077912a9fa7b2d4f54482c3b498274b7cb99dd2da0",
+      "adapted": false,
+      "release_sha256": "97ba522ecadd4ca0f18aaf077912a9fa7b2d4f54482c3b498274b7cb99dd2da0"
+    },
+    {
+      "path": "tests/test_cub_figure_candidates.py",
+      "source_sha256": "2f1dd37a81cee9d1ebb23ea0b085e388111e0eb78a40cff0fac414ce180b5944",
+      "adapted": false,
+      "release_sha256": "2f1dd37a81cee9d1ebb23ea0b085e388111e0eb78a40cff0fac414ce180b5944"
+    },
+    {
+      "path": "tests/test_cub_shape_rebuild.py",
+      "source_sha256": "0ed53a114de979999b39e6588dbd6f27f024bf6434ceec6c2e20123836e8ee4d",
+      "adapted": false,
+      "release_sha256": "0ed53a114de979999b39e6588dbd6f27f024bf6434ceec6c2e20123836e8ee4d"
+    },
+    {
+      "path": "tests/test_decoder_baselines.py",
+      "source_sha256": "a83a3621d077a97cfc4451c7e895bfd03cf15181ca1d1b623a975d0289cacaec",
+      "adapted": false,
+      "release_sha256": "a83a3621d077a97cfc4451c7e895bfd03cf15181ca1d1b623a975d0289cacaec"
+    },
+    {
+      "path": "tests/test_explanation_trace.py",
+      "source_sha256": "0fb751891fb23db6c9b4e292e6f09f5cf4561dc530dc66a93cae02d37b2564ae",
+      "adapted": true,
+      "release_sha256": "ad6fc903ee768a65bb8d7175c6eafeefeec1cd0bd69500d13d4fd2e335340a08"
+    },
+    {
+      "path": "tests/test_linear_probe_shape_transfer.py",
+      "source_sha256": "2b8c5a4f9f63f76140917474c9dc03c3a29506643534662247bf7ef073b91a0b",
+      "adapted": false,
+      "release_sha256": "2b8c5a4f9f63f76140917474c9dc03c3a29506643534662247bf7ef073b91a0b"
+    },
+    {
+      "path": "tests/test_posthoc_shape_diagnostics.py",
+      "source_sha256": "0acb9f3e032039a8f848c789370f9d0ee7c94df8c8e78d9a668bf2ddb121d387",
+      "adapted": false,
+      "release_sha256": "0acb9f3e032039a8f848c789370f9d0ee7c94df8c8e78d9a668bf2ddb121d387"
+    },
+    {
+      "path": "tests/test_residual_controls.py",
+      "source_sha256": "bd422a46300534602f065297275ac1dabdefcf13b756668728aebf567b11f951",
+      "adapted": false,
+      "release_sha256": "bd422a46300534602f065297275ac1dabdefcf13b756668728aebf567b11f951"
+    },
+    {
+      "path": "tests/test_teacher_alignment_audit.py",
+      "source_sha256": "f046feb1bef70357ed35d8ef3d2aa220d0b603127c5819e6994bcbb85b4fe537",
+      "adapted": false,
+      "release_sha256": "f046feb1bef70357ed35d8ef3d2aa220d0b603127c5819e6994bcbb85b4fe537"
+    },
+    {
+      "path": "utils/bias_only.py",
+      "source_sha256": "1ee2335771a8fb12736d658564149dc739182bf4f6cc3917b44bdb031ce277df",
+      "adapted": false,
+      "release_sha256": "1ee2335771a8fb12736d658564149dc739182bf4f6cc3917b44bdb031ce277df"
+    },
+    {
+      "path": "utils/dcbm.py",
+      "source_sha256": "1eeb3238f1c7088e196097660edde3b5d8ef29415f95225760b34098dec03194",
+      "adapted": false,
+      "release_sha256": "1eeb3238f1c7088e196097660edde3b5d8ef29415f95225760b34098dec03194"
+    },
+    {
+      "path": "utils/dcbm_1.py",
+      "source_sha256": "7908e276a77439b05cc42fe2af96e68aa967022c573ad0ec496470060c75f176",
+      "adapted": true,
+      "release_sha256": "23446ea0983081db65fa62c3853ce33ac5d4be7f6da23d4002b8d0fa7fad94ea"
+    },
+    {
+      "path": "utils/residual_controls.py",
+      "source_sha256": "8095a321e589a0d75021d992ba14d30d0f689d886056e79c257866727870c9ec",
+      "adapted": false,
+      "release_sha256": "8095a321e589a0d75021d992ba14d30d0f689d886056e79c257866727870c9ec"
+    },
+    {
+      "path": "utils/sdr_cbm_visualize.py",
+      "source_sha256": "c66416823ba961f7d95848b75127e58caac8509f7cc0e895a8f54911f86f6d20",
+      "adapted": false,
+      "release_sha256": "c66416823ba961f7d95848b75127e58caac8509f7cc0e895a8f54911f86f6d20"
+    },
+    {
+      "path": "utils/shape_perturbations.py",
+      "source_sha256": "86e1d6f23baab459e5248fefb6de2de473f4ecd76d48dfae32b36075087de57c",
+      "adapted": false,
+      "release_sha256": "86e1d6f23baab459e5248fefb6de2de473f4ecd76d48dfae32b36075087de57c"
+    },
+    {
+      "path": "tools/plot_contributions.py",
+      "source_project": "Reusable contribution plotting tool",
+      "source_sha256": "5d9e86661beac41d8af26206c749f19c6206d036b8d2cf4a37f6e6237ecf0876",
+      "adapted": true,
+      "release_sha256": "37925481c174f136d66f7fcfb4d2b40ec99668c52cf8851a42fa2ccbfe6e90c4"
+    }
+  ],
+  "documentation_figures": {
+    "manifest": "docs/assets/figures/manifest.json",
+    "exporter": "tools/export_paper_figures.py",
+    "count": 7,
+    "transformation": "Complete standalone figure pages rendered to lossless PNG; source PDFs unchanged."
+  }
+}

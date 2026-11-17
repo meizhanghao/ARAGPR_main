@@ -1,0 +1,25 @@
+cff-version: 1.2.0
+message: "Please cite the accompanying manuscript when using this research implementation."
+type: software
+title: "Auditing Residual Attribution with Geometric Prototype References"
+version: 0.1.0
+license: MIT
+date-released: 2026-11-17
+repository-code: "https://github.com/meizhanghao/ARAGPR_main"
+authors:
+  - family-names: Mei
+    given-names: Zhanghao
+    orcid: "https://orcid.org/0009-0006-0270-6850"
+  - family-names: Meng
+    given-names: Zuqiang
+    orcid: "https://orcid.org/0000-0002-4911-6958"
+  - family-names: Tang
+    given-names: Xuwei
+    orcid: "https://orcid.org/0009-0006-3912-5347"
+  - family-names: Wang
+    given-names: Ning
+keywords:
+  - interpretable machine learning
+  - residual attribution
+  - geometric prototypes
+  - correspondence auditing

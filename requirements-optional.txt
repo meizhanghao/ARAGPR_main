@@ -1,0 +1,13 @@
+# Feature extraction and CLIP naming; these are not required by cached controls.
+torchvision>=0.17
+ftfy
+regex
+git+https://github.com/openai/CLIP.git
+# Official SAM2, instead of redistributing a modified nested source tree.
+git+https://github.com/facebookresearch/sam2.git
+# Older standalone DCBM baseline runners.
+imbalanced-learn
+wandb
+sympy
+joblib
+
