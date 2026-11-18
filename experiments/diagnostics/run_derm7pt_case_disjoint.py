@@ -307,10 +307,10 @@ def run(args):
         runner_sha256=sha256(__file__), elapsed_seconds=time.monotonic() - started)
     write_json(output / "protocol.json", protocol)
     write_json(output / "status.json", dict(status="complete"))
-    lines = ["# Derm7pt病例独立初跑", "",
+    lines = ["# Derm7pt病例分组评估", "",
         "病例编号来自原始meta.csv的case_num；同一病例全部图像留在同一分区。这不是患者独立性认证。",
         "冻结CLIP特征及单区域描述子复用；DCBM概念库、形状库、所有scaler、基座head、decoder和残差head均重新拟合。",
-        f"划分种子{args.split_seed}，训练种子{args.seed}，只有一次初跑；以下不提供多种子标准差。", "",
+        f"划分种子{args.split_seed}，训练种子{args.seed}；本次使用单划分、单训练种子，不报告多种子标准差。", "",
         "| 分区 | 病例数 | 图像数 | 有效Teacher/% |", "|---|---:|---:|---:|"]
     for r in counts:
         lines.append(f"| {r['split']} | {r['n_cases']} | {r['n_images']} | {r['teacher_coverage_pct']:.2f} |")
@@ -326,7 +326,7 @@ def run(args):
     for r in fixed_rows:
         lines.append(f"| {r['method']} | {r['accuracy_pct']:.2f} |")
     lines += ["", "对应关系及两种置换见fixed_head/RESULTS_zh.md。",
-        "此结果属于新病例分区和新拟合模型，不能与论文原表作为同一运行合并。",
+        "结果对应本次病例分区及其重新拟合的模型，与保留图像分区的结果分别报告。",
         "病例分组解决本次分区重叠；单种子结果尚不能证明训练稳定性或临床泛化。", ""]
     (output / "RESULTS_zh.md").write_text("\n".join(lines), encoding="utf-8")
     print("COMPLETE " + str(output), flush=True)

@@ -61,15 +61,16 @@ The manuscript's principal accuracy rows use the arithmetic mean of per-epoch
 test accuracy over the final 15 training epochs. The Frozen comparison averages
 the corresponding sequence of original base checkpoints.
 
-The added diagnostic runners select saved models using validation data and
+The diagnostic runners select saved models using validation data and
 report those fixed-checkpoint results. Pairing studies can repeat branch fits
 with seeds 42, 43 and 44 while holding the base/bank/members fixed. Their sample
 standard deviation is between those fits; it is not final-epoch oscillation or
 uncertainty over independent base-training runs.
 
-Do not substitute one convention for another. Exact reproduction of a published
-epoch mean requires the corresponding experiment configuration and checkpoint
-sequence. This source snapshot does not contain the server's full run artifacts.
+Reproducing a published epoch mean requires the corresponding experiment
+configuration and checkpoint sequence. Fixed-checkpoint results and across-seed
+summaries use the aggregation rules described above. Experiment outputs and
+checkpoints are generated separately from the source distribution.
 
 ## Interpretation boundaries
 

@@ -1,8 +1,7 @@
-"""Verify the CUB pilot and report the two retained local pairing diagnostics.
+"""Verify saved CUB models and summarize CUB/Derm7pt pairing diagnostics.
 
-This script reads fitted models and outputs only. It never trains, chooses a
-model from test results, or modifies manuscript data. Author-provided server
-Derm7pt summaries remain a separate source, not pooled with local experiments.
+The report uses fitted models and saved outputs. Additional Derm7pt reference
+summaries are reported separately from the replayed experiments.
 """
 import csv
 import json
@@ -148,11 +147,11 @@ def make_report(protocol, semantic, labels, valid):
     table = {mode: next(r for r in summary if r['mode'] == mode and r['subset'] == 'all') for mode in MODES}
     lines = [
         '# CUB 与 Derm7pt 配对监督诊断', '',
-        '本次新增 CUB 的三个真实 decoder/head 种子（42、43、44），每个种子重新拟合真实配对、全局打乱、同类内打乱三组，共9个模型。结果先保存为本地机制诊断，未替换论文服务器实验。后续机制讨论限于 CUB 和 Derm7pt。', '',
+        '报告比较真实配对、全局打乱和同类内打乱三种监督方式，汇总CUB与Derm7pt保存的模型、分类结果和目标重建指标。运行配置与种子见对应的protocol.json。', '',
         '## CUB 实验协议', '',
         '固定同一 Frozen DCBM 检查点、保留分区、CLIP 特征与训练集 geo11 原型库（K_s=128）。每组 decoder 都是768→128的仿射映射，head为128→200；种子变化包含初始化、训练顺序及训练配对置换，未重新训练 Frozen 或重建原型库。只置换训练图像与完整128维 teacher 向量的对应，不置换向量坐标。全局打乱破坏跨类别及图像对应；同类打乱保留类别相关性，破坏类内图像对应。', '',
         '每组只用有效训练 teacher 监督 decoder；验证 teacher 始终保留真实对应。decoder使用SmoothL1、AdamW、lr0.001、weight_decay0.0001、batch64、最多300轮、patience30，以验证损失最小的检查点为准。所有训练图像均进入残差分类头，分支标准化只拟合训练集；head使用CE+L1（0.0001）、Adam(lr0.001)、batch64、最多100轮、patience30，eta={0.1,0.25,0.5,0.75,1}，以验证正确数最大选择，同分保留首先遇到的候选。各组搜索预算和选择规则相同，选择出的eta/轮数可以不同。测试标签不参与训练或选参。', '',
-        '本地 train/val/test 分别7142/2323/2323张；有效teacher分别6880/2004/2260张。所有组沿用完全相同的图像成员。下面的±是三个实际种子的样本标准差（ddof=1），并非最后若干轮的起伏。结果为验证选择的单检查点；论文服务器以最后15轮逐轮测试准确率求均值，两种口径不可合并。', '',
+        '所有组沿用相同的图像成员。±表示分支种子之间的样本标准差（ddof=1）；分类结果使用验证集选定的单检查点。成员、有效teacher覆盖率及检查点来源见运行记录。', '',
         '## CUB 分类结果', '',
         '| 设置 | 测试准确率（%） | 相对同一 Frozen（百分点） |',
         '|---|---:|---:|',
@@ -161,7 +160,7 @@ def make_report(protocol, semantic, labels, valid):
     for mode in MODES:
         row = table[mode]
         lines.append(f"| {NAMES[mode]} | {float(row['mean_accuracy_pct']):.2f} ± {float(row['sample_std_across_seeds_pct']):.2f} | {float(row['mean_delta_frozen_pp']):+.3f} |")
-    lines += ['', '这里 Frozen=83.00% 是缓存中1928/2323的单一模型准确率。论文中的81.80%来自另一服务器统计口径，不能把本地三组结果强行减去差值后对齐论文。', '',
+    lines += ['', 'Frozen准确率由当前缓存中的基准模型预测计算；各组相对差值使用同一模型、同一测试成员作为参照。', '',
               '| 种子 | 真实配对 | 全局打乱 | 同类内打乱 |', '|---|---:|---:|---:|']
     for seed in protocol['seeds']:
         values = [next(float(r['accuracy_pct']) for r in groups if r['mode'] == mode and int(r['seed']) == seed and r['split'] == 'test' and r['subset'] == 'all') for mode in MODES]
@@ -185,12 +184,12 @@ def make_report(protocol, semantic, labels, valid):
     means = {m: float(table[m]['mean_accuracy_pct']) for m in MODES}
     differences = {m: means['paired'] - means[m] for m in MODES[1:]}
     if all(value > 0 for value in differences.values()):
-        conclusion = '本地 CUB 真实配对的分类均值高于两个打乱对照。是否足以支持稳定分类优势，还应结合成对区间与逐种子方向判断，不能仅凭均值称为“证明”。'
+        conclusion = 'CUB真实配对的分类均值高于两个打乱对照；优势的稳定性需结合配对差值区间及逐种子方向评估。'
     else:
-        conclusion = '本地 CUB 真实配对的分类均值并未同时高于两个打乱对照；这次结果不支持“正确形状配对带来稳定的额外分类收益”。不能选择性删去相反的打乱结果，也不能据此证明收益必然来自背景、纹理或其他具体机制。'
+        conclusion = 'CUB真实配对的分类均值未同时高于两个打乱对照。当前结果未显示一致的额外分类优势，也不能由此确定分支使用的是背景、纹理或其他具体信息。'
     lines += ['', conclusion, '',
               '重建与分类检验的是不同问题：真实配对的teacher恢复较好，表明学到了部分真实目标对应；若分类接近或落后打乱组，则仍不能把分类收益专门归因于该对应关系。打乱头保留同样的128维输出和正则化训练，可能仍产生可供分类头利用的映射；本实验没有识别其具体内容。', '',
-              '## 两个数据集：同口径本地诊断', '',
+              '## 两个数据集：固定检查点诊断', '',
               '| 数据集／来源 | 固定 Frozen | 真实配对 | 全局打乱 | 同类内打乱 |',
               '|---|---:|---:|---:|---:|']
     combined = []
@@ -202,20 +201,20 @@ def make_report(protocol, semantic, labels, valid):
             cells.append(f"{float(row['mean_accuracy_pct']):.2f} ± {float(row['sample_std_across_seeds_pct']):.2f}")
             combined.append({'dataset': dataset, 'source': 'local_validation_selected_checkpoints',
                              'frozen_accuracy_pct': frozen_value, **row})
-        lines.append(f'| {dataset}／本地 | {frozen_value:.2f} | ' + ' | '.join(cells) + ' |')
-    lines += ['', '两个本地诊断使用相同训练和选择规则，均为固定 Frozen 下的3个decoder/head种子。Derm7pt的保留分区存在共享病例，只能作探索性诊断；其成对区间按病例成组抽样，见原Derm7pt报告。不得把下列服务器汇总与这张本地表合成同一实验来源。', '',
-              '## 作者提供的 Derm7pt 服务器结果（单列）', '']
+        lines.append(f'| {dataset}／固定检查点 | {frozen_value:.2f} | ' + ' | '.join(cells) + ' |')
+    lines += ['', '两个数据集使用相同训练和选择规则，在固定Frozen下重复拟合decoder/head。Derm7pt保留分区中的共享病例限制了独立性，其配对区间按病例成组抽样。下方附加参考结果来自独立的汇总文件，单列报告。', '',
+              '## Derm7pt附加参考汇总', '']
     author = json.loads(AUTHOR.read_text(encoding='utf-8'))
     supplied = author['reported_mean_and_plusminus_pct']
     lines += ['| 来源 | Frozen | 真实配对 | 全局打乱 | 同类内打乱 |', '|---|---:|---:|---:|---:|',
-              f"| 作者服务器汇总 | {author['frozen_accuracy_pct']:.2f} | {supplied['paired'][0]:.2f} ± {supplied['paired'][1]:.2f} | {supplied['global_shuffled'][0]:.2f} ± {supplied['global_shuffled'][1]:.2f} | {supplied['within_class_shuffled'][0]:.2f} ± {supplied['within_class_shuffled'][1]:.2f} |", '',
-              '该服务器汇总未在本地重放。真实配对均值分别高于全局打乱2.17、同类打乱1.00个百分点，支持正确对应关系可能有所贡献；只有汇总均值与±，不能计算成对种子差值的方差或据此宣布统计显著，也不能直接沿用本地的置信区间。新服务器±的定义和逐种子对应需随结果一起保留。CUB本次本地结果若不呈现同样方向，论文应如实区分数据集及协议，避免把Derm7pt结果扩展为所有数据集上的机制结论。', '',
+              f"| 附加参考汇总 | {author['frozen_accuracy_pct']:.2f} | {supplied['paired'][0]:.2f} ± {supplied['paired'][1]:.2f} | {supplied['global_shuffled'][0]:.2f} ± {supplied['global_shuffled'][1]:.2f} | {supplied['within_class_shuffled'][0]:.2f} ± {supplied['within_class_shuffled'][1]:.2f} |", '',
+              '附加参考文件仅包含汇总均值与离散程度，未提供可回放的逐种子预测，因此不计算其成对种子差值方差，也不沿用另一组模型的置信区间。各数据集、模型及统计协议分别解释。', '',
               '## 文件、核验与复现', '',
-              '9个CUB模型全部在train/val/test作独立CPU矩阵回放，逐图预测、成员、标签、teacher有效性及修正/损害计数一致；decoder与head的检查点选择符合验证历史，R²由sklearn独立复算。原始缓存、检查点、训练代码及已交付的TeX/PDF/Word哈希未变。4项新增不变量测试全部通过。', '',
+              '核验使用独立CPU矩阵回放，比较逐图预测、成员、标签、teacher有效性及修正/损害计数，检查验证集选定的decoder与head，并独立复算R²。详细结果见final_verification.json。', '',
               f'- CUB结果：`{CUB}`',
               f'- 独立核验：`{CUB / "final_verification.json"}`',
               f'- 运行脚本：`{ROOT / "experiments/controls/run_cub_pairing_controls.py"}`',
-              f'- Derm7pt本地结果：`{DERM}`', '',
+              f'- Derm7pt结果：`{DERM}`', '',
               '复现时使用新输出目录，避免覆盖本次实验：', '', '```powershell',
               f"Set-Location '{ROOT}'",
               "python -X utf8 -m unittest tests.test_cub_pairing_controls -v",

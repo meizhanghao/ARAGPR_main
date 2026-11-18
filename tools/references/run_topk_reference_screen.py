@@ -780,7 +780,7 @@ def gallery(cases,refs,stats,out,topk):
     template='''<!doctype html><html lang="zh"><meta charset="utf-8"><title>CUB / Derm7pt 形状参考筛选</title>
 <style>body{font-family:"Microsoft YaHei",sans-serif;color:#263541;margin:24px auto;max-width:1580px;padding:0 18px;line-height:1.65}h1{font-size:27px}h2{font-size:21px}button,select,input{padding:8px;margin:4px;border:1px solid #aebbc3;border-radius:4px}button{cursor:pointer;background:#edf4f5}a{color:#0072b2}.note{padding:14px;background:#eef3f7}.controls{position:sticky;top:0;background:#fff;z-index:3;border-bottom:2px solid #cdd6dd;padding:8px}article{margin:25px 0;border:1px solid #cdd6dd;border-radius:6px;padding:16px}.badge{display:inline-block;margin:3px 6px 3px 0;padding:3px 9px;background:#edf4f5}.good{background:#e0f0e8}.bad{background:#f8e9e3}.query{display:grid;grid-template-columns:250px 1fr;gap:20px}.query img{width:245px;height:220px;object-fit:contain}.refs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;margin-top:15px}.ref{min-width:0;border-top:4px solid #267d70;background:#fafcfd;padding:8px}.ref.neg{border-color:#b96050}.ref img{width:100%;height:160px;object-fit:contain}.ref .local{height:110px}.ref p{font-size:13px;overflow-wrap:anywhere;margin:5px 0}.ref .q{font-family:"Times New Roman",serif;font-size:24px;font-weight:500}.pure{max-width:100%;max-height:580px;object-fit:contain}summary{cursor:pointer}.small{font-size:13px;color:#60707c}#count{font-weight:bold}@media(max-width:900px){.refs{grid-template-columns:repeat(2,minmax(0,1fr))}.query{grid-template-columns:1fr}.controls{position:static}}</style>
 <h1>CUB / Derm7pt：真实 Top-__K__ 形状参考候选</h1>
-<p class="note">分别核对参考区域内容与来源类别。形状簇没有鸟种/诊断标签；正贡献也不等于高相似度。这里的同类仅指所展示训练参考原图的标签。<b>纠错</b>使用最终类与 Frozen 原预测的对比；<b>预测未变</b>使用共同预测类与 Frozen 第二候选的对比，不能冒充纠错。所有数值来自本地保存的单检查点，不能替代论文服务器平均准确率。</p>
+<p class="note">参考区域内容与来源类别分别记录。形状簇没有鸟种/诊断标签，正贡献也不等于高相似度；同类指训练参考原图的标签。<b>纠错</b>比较最终类与Frozen原预测，<b>预测未变</b>比较共同预测类与Frozen第二候选。所有数值来自对应运行的选定检查点。</p>
 <p><a href="筛选说明.md">筛选说明与推荐</a> · <a href="all_cases_ranking.csv">全部案例统计</a> · <a href="all_topk_provenance.csv">每一项的原图与贡献</a> · <a href="reference_index.html">全部训练参考</a> · <a href="manifest.json">处理范围</a></p>
 <div class="controls"><select id="ds"><option value="CUB">CUB</option><option value="Derm7pt">Derm7pt</option><option value="">全部数据集</option></select><select id="cat"><option value="correction">纠错</option><option value="unchanged_correct">预测未变且正确</option><option value="harm">误改</option><option value="">全部状态</option></select><select id="req"><option value="positive">至少一项：正贡献＋同类＋本体</option><option value="complete">五项完整符合正同类/负异类</option><option value="body">五项均为本体</option><option value="">全部案例</option></select><label><input type="checkbox" id="independent">Derm7pt 病例不跨分区</label><label><input type="checkbox" id="short">仅已生成纯图</label><input id="search" placeholder="案例编号、原图名、类别" size="28"><div><button id="prev">上一页</button><span id="count"></span><button id="next">下一页</button></div></div><main id="main"></main>
 <script>const DATA=__DATA__;const $=id=>document.getElementById(id),esc=s=>String(s??'').replace(/[&<>"']/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[x]));let page=0;const per=12;const labels={correction:'纠错',harm:'误改',unchanged_correct:'预测未变且正确',unchanged_error:'预测未变且错误',other_flip:'其他改变'};
@@ -800,13 +800,13 @@ for(const id of ['ds','cat','req','independent','short','search'])$(id).addEvent
 
 def write_report(cases,refs,stats,out,topk):
     lines=[f'# Top-{topk} 本体与来源类别筛选\n',
-           '现有图1/图2文件夹保持完整；等作者选定新案例后再替换。没有重新训练、生成分割或更改论文数据。\n',
+           '候选案例根据保存的测试预测及训练参考生成。逐坐标贡献、原图、局部区域和轮廓均保留来源记录。\n',
            '## 范围与口径\n',
            'CUB、Derm7pt 各自扫描三个已保存真实配对模型的完整测试预测，并保留原论文导出的预测改变案例。跨运行重复的测试图会分别保留，但推荐列表优先去重。\n',
            '形状簇是跨类几何聚类，来源类名只是当前训练参考原图的标签，不能将同类来源直接视为已识别的物种/诊断概念。正负号由响应与分类权重差共同决定。\n',
-           '预测改变案例比较最终类与 Frozen 原预测；未改变案例比较共同预测与 Frozen 第二候选，明确标为“预测未变”，不作为纠错展示。保留全部128项分解，Other现在是其余123项。\n',
+           f'预测改变案例比较最终类与Frozen原预测；未改变案例比较共同预测与Frozen第二候选，并标为“预测未变”。保留全部128项分解，Other汇总其余{128-topk}项。\n',
            '## 筛选统计\n',json.dumps(stats,ensure_ascii=False,indent=2),
-           '\n## 供挑选的已生成图\n']
+           '\n## 候选图与贡献\n']
     for dataset in DATASETS:
         lines.append(f'\n### {dataset}\n')
         for c in cases:
@@ -814,14 +814,14 @@ def write_report(cases,refs,stats,out,topk):
                 same=[f"P{r['prototype_id']} {r['q']:+.3f} {r['original_name']}" for r in c['top']
                       if r['is_body'] and r['same_final_class'] and r['q']>0]
                 lines.append(f"- **{c['candidate_id']}**，{c['category']}，{c['sample_key']}；本体 {c['body_count']}/{topk}；正同类本体 {c['positive_sameclass_body_count']}；负异类本体 {c['negative_otherclass_body_count']}；同类正项：{'; '.join(same) or '无'}。")
-    lines+=['\n## 如何继续\n',
+    lines+=['\n## 查看结果\n',
             '打开 index.html；先看纠错，再看“预测未变且正确”，也可筛“五项完整符合正同类/负异类”。若严格条件无结果，应保留这一事实，不替换真实前五项。图1若要展示改正预测，必须从纠错通道选择；图2可展示正确预测的分解，但须如实写明 Frozen 也正确。\n',
             'panels 为只含图片/数值的 Top-5 组合；waterfalls 为图4同色系的纯数值五项图及闭合完整版；figure1_previews 为比较预览。纯图中不含 P编号或排名字样。\n',
             '每一项原图、区域、轮廓、来源类别、响应、有效权重差见 all_topk_provenance.csv；整体排名见 all_cases_ranking.csv；图像原位置及SHA-256见 references/*/region_provenance.json。\n']
     exclusions=read_json(out/'excluded_incomplete_traces.json')
     lines+=['\n## 已知边界\n',
-            '本次“全部处理”指上述保存模型的全部测试预测及全部128个形状坐标的训练代表，未重新生成任何分割，也未为现有模型替换代表。CUB共135个跨bank不同代表，Derm7pt共129个。\n',
-            '原Derm7pt目录另有3个不完整旧trace缺少全128项CSV，已单列 excluded_incomplete_traces.json，没有用前五项反推其余贡献；这3张测试图仍包含在三个配对模型的完整测试扫描中。\n',
+            '扫描范围为所选保存模型的测试预测及各原型库的128个坐标参考，输入、数量及哈希见manifest.json。\n',
+            '缺少完整贡献CSV的trace单列在excluded_incomplete_traces.json，不从Top-k反推其余坐标。\n',
             '区域内容来自图像复核，不是专家临床标注；模糊或归属不清的区域不计为本体。照片标签相同不等于该几何簇只表示这个类别。\n',
             '现有参考库中许多代表为背景、气泡或测量标尺，这说明当前聚类与区域选择未限定目标本体。筛选展示不能消除这一来源问题，也不能用改名称把它们变成病灶或鸟体。\n']
     (out/'筛选说明.md').write_text('\n'.join(lines),encoding='utf-8')

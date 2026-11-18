@@ -319,7 +319,7 @@ def case_page(c, refs, out):
             body += f'<p>参考病例 {ref["case_num"]}；{esc(ref["diagnosis"])}；{esc(ref["modality"])}。<br>定位状态：{esc(ref["context_status"])}</p>'
         body += '</section>'
     body += f'</div><h2>可直接取用的无编号图件</h2><div class="box"><a href="../panels/{cid}.png"><img src="../panels/{cid}.png"></a><p>左为待解释图，右依次为训练参考的原图定位、RGB 局部和轮廓；没有 P 编号或 Top 字样。<a href="../panels/{cid}.png">下载 PNG</a>。</p></div>'
-    body += '<p class="muted">本页来自本地单检查点/原始 trace 的定性回放，不代表论文服务器末15轮均值。训练参考不定位测试证据；来源类别不定义几何原型。病例跨分区情况已单列，不能据此主张患者独立泛化。</p>'
+    body += '<p class="muted">本页基于所选检查点及原始trace进行定性回放。训练参考不定位测试证据，来源类别不定义几何原型；医学病例的跨分区情况单列报告。</p>'
     (out / 'pages' / (cid+'.html')).write_text(page(cid, body), encoding='utf-8')
 
 

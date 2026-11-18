@@ -4,8 +4,10 @@
 
 对应论文：**Auditing Residual Attribution with Geometric Prototype References**。
 
-本目录是当前研究代码的独立发布副本。原研究工程未修改。为兼容已有模型，
-保留部分旧文件名、类名和 `SDR-CBM` 标识；项目对外名称为 ARAGPR。
+ARAGPR 从训练区域的轮廓构造几何原型，通过冻结图像嵌入预测原型响应，
+并将残差分类分数分解为逐坐标的有符号贡献。每个坐标保留对应的训练区域
+与轮廓作为视觉参考。DCBM 是主要实验平台，代码也提供普通冻结 CLIP
+线性分类器上的分支入口。
 
 ## 包含内容
 
@@ -16,15 +18,15 @@
 - 普通 CLIP 线性分类器上的分支验证、解释素材导出与命名辅助工具。
 - 测试、依赖、来源说明和一个不含真实数据的运行示例。
 
-原始数据集、独立图像/区域库、mask 缓存、embedding、权重和历史实验输出不在副本中。
-文档仅收录论文已经使用的合成图示；其余数据文件仍由 `.gitignore` 排除。
-第三方 SAM2 框架从官方仓库单独安装。
+训练所需的数据集、区域掩码、图像嵌入和基准检查点需单独准备。
+仓库提供五个数据集的类别词表，以及用于理解方法和输出的论文图示。
+SAM2 及其模型权重从官方项目获取。
 
 ## 结合论文图理解方法
 
-英文主页已嵌入论文的框架图、聚类原型展示和完整贡献审计图。
-更完整的[图文说明](VISUAL_GUIDE.md)还包括残差接口、纠正案例、误改案例及验证曲线，
-并标明每张图对应的代码入口。
+[英文主页](../README.md)展示框架图、聚类原型和完整贡献审计图。
+[图文说明](VISUAL_GUIDE.md)还包括残差接口、纠正案例、误改案例及验证曲线，
+并提供每张图对应的代码入口。
 
 - 框架图：区分训练时的形状监督与推理时无需 mask 的 decoded 分支。
 - 聚类结果图：对照原图、局部区域和轮廓，理解坐标的训练参考内容。
@@ -34,7 +36,10 @@
 聚类成员是用于展示的选例，不是全簇纯度统计；参考图不定位测试图像证据。
 自动名称仅辅助阅读，不参与训练、预测或贡献计算。
 
-## 开始使用
+## 安装与快速开始
+
+建议使用 Python 3.10 或 3.11，并根据 CPU/CUDA 环境安装 PyTorch。
+在仓库根目录执行：
 
 ```bash
 python -m pip install -r requirements.txt
@@ -43,8 +48,11 @@ python -X utf8 -m unittest discover -s tests -v
 python -m aragpr demo --output outputs/synthetic_demo
 ```
 
-`synthetic_demo` 只验证归因公式和 CSV 输出，不是论文实验数据。
-CLIP、SAM2、旧基线所需的额外依赖在 `requirements-optional.txt` 中。
+`synthetic_demo` 使用合成输入，导出全部 128 项坐标贡献并验证类别间隔分解，
+无需下载数据集或模型检查点。CLIP、SAM2 和基线所需的额外依赖在
+`requirements-optional.txt` 中。
+
+## 数据准备与训练
 
 完整输入结构见 [DATA.md](DATA.md)。准备好数据后，可运行：
 
@@ -52,34 +60,60 @@ CLIP、SAM2、旧基线所需的额外依赖在 `requirements-optional.txt` 中�
 python train.py --dataset derm7pt --use_shape --shape_input geo --K_shape 128 --shape_mode decoded --freeze_semantic_from semantic_checkpoints/derm7pt_semantic_baseline.pt
 ```
 
-`geo` 是代码中 geo11 的参数名。`oracle` 是 Direct teacher 的历史参数名，
-需要测试 mask，不能作为 mask-free 推理结果。`decoded_rel` 是可选的相关性加权变体。
+`geo` 对应 11 维的 geo11 描述子。三种分支模式分别为：
 
-需要把代码与数据分开存放时，使用 `train.py --project-root 数据目录 ...`。
-配对对照入口也支持 `--project-root`。搬迁旧缓存时可设置环境变量
-`ARAGPR_DATA_ROOT`，数据文件仍会执行已有 SHA256 校验。
+- `decoded`：从图像嵌入预测形状响应，推理时无需测试掩码。
+- `oracle`：Direct teacher 的命令行名称，使用掩码生成的目标响应进行诊断。
+- `decoded_rel`：使用验证集相关性进行加权的 decoded 变体。
 
-## 实验对应关系
+代码和数据可以分开存放。通过 `train.py --project-root 数据目录 ...`
+指定数据根目录；配对对照入口也支持该参数。使用已缓存的实验时，可通过
+`ARAGPR_DATA_ROOT` 指定输入数据位置，加载器会校验特征文件的 SHA256、
+样本顺序和类别标签。
+
+## 对照实验与诊断
 
 入口对应表在 [ENTRY_POINTS.md](ENTRY_POINTS.md)，
 训练和统计口径在 [PROTOCOLS.md](PROTOCOLS.md)。
-主表最后 15 轮均值、单检查点诊断、三个分支种子的均值和标准差必须区分。
-代码副本不附带服务器检查点序列，不能把本地初跑结果直接当作论文表格的逐项复现。
+主要入口包括：
 
-命名工具提供候选词的 CLIP 排序；VLM 决选应另行记录实际模型、prompt、
-输入图像与输出。名称仅辅助阅读，不进入分类或贡献计算。
+```bash
+python -m experiments.controls.run_residual_controls --help
+python -m experiments.controls.run_decoder_baselines --help
+python -m experiments.diagnostics.run_posthoc_shape_diagnostics --help
+python -m experiments.diagnostics.run_teacher_alignment_audit --help
+python -m tools.plotting.plot_contributions --help
+```
 
-## 上传 GitHub
+运行时指定输入缓存、模型路径和输出目录。残差对照、解码器基线、固定头
+Teacher 替换和贡献对应性分析使用各自的输入与统计规则。
 
-上传本目录中的源码和文档，保留 `.gitignore`、`LICENSE`、
-`licenses/DCBM-MIT.txt` 和 `THIRD_PARTY_NOTICES.md`。
-无需把原工程、论文稿件、临时目录或数据集一起上传。
-远端仓库为 [meizhanghao/ARAGPR_main](https://github.com/meizhanghao/ARAGPR_main)。
+## 结果与统计口径
 
+论文主要分类结果为最后 15 轮测试准确率的算术平均；固定模型诊断使用
+验证集选定的检查点；配对实验的标准差来自不同分支种子的重复拟合。
+复现前者需要对应的检查点序列，后两者需要保存的模型和输入缓存。
 
-## 整理后的目录与运行方式
+归因针对指定的两个类别计算：正值支持目标类别，负值支持参考类别。
+完整类别间隔由基准间隔、全部坐标贡献和偏置项共同构成。Top-k 按贡献
+绝对值排序，贡献大小同时取决于响应和分类头权重。
 
-根目录只保留 `train.py` 作为主训练入口；核心实现位于 `aragpr/training.py`。
+训练参考用于查看坐标关联的区域与轮廓，不等同于测试图像中的证据定位。
+医学实验的保留分区与独立病例分区是不同设置，具体条件见
+[实验协议](PROTOCOLS.md)与[数据说明](DATA.md)。
+
+## 原型辅助命名
+
+命名流程使用 CLIP 对候选词排序，再由 GPT-4o 结合区域原图、RGB 局部图
+与轮廓图进行选择、精简或弃权。`tools/naming/` 提供 CLIP 排序工具，
+[命名说明](prototype_naming/README_zh-CN.md)提供 GPT-4o 提示词和运行记录模板。
+每次运行保存模型信息、候选词表、排序、提示词与输出。
+
+名称用于辅助理解训练参考内容，不参与模型训练、预测或贡献计算。
+
+## 目录与运行方式
+
+主训练入口为 `train.py`；核心实现位于 `aragpr/training.py`。
 `experiments/` 下分别存放基线、拟合对照和固定模型诊断；预处理在
 `scripts/preprocessing/`；素材筛选、完整性核验、命名和绘图在 `tools/` 对应子目录。
 辅助入口从仓库根目录以 `python -m 包.模块` 运行，例如：
@@ -90,7 +124,14 @@ python -m experiments.diagnostics.run_teacher_alignment_audit --help
 python -m tools.plotting.plot_contributions --help
 ```
 
-完整命令见 [ENTRY_POINTS.md](ENTRY_POINTS.md)，旧新路径见
-[FILE_MIGRATIONS.json](FILE_MIGRATIONS.json)。
-命名所需的 [中文说明、GPT-4o 提示词和记录模板](prototype_naming/README_zh-CN.md)
-已集中存放；实际模型、日期、候选词、排序与输出需要按实际运行填写。
+完整命令及检查点兼容性说明见 [ENTRY_POINTS.md](ENTRY_POINTS.md)。
+
+## 引用与许可
+
+论文标题和作者信息见 [CITATION.cff](../CITATION.cff)。DCBM 相关实现改编自
+[官方代码](https://github.com/KathPra/DCBM)，引用信息见[英文主页](../README.md#citation-and-acknowledgements)。
+代码许可及第三方来源分别见 [LICENSE](../LICENSE) 和
+[THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)。数据集和第三方模型权重
+遵循各自提供方的使用条款。
+
+联系邮箱：zqmeng@gxu.edu.cn。

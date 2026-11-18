@@ -117,8 +117,8 @@ Missing or changed features are errors rather than silently substituted data.
 
 ## Splits and medical metadata
 
-The original retained image partitions and a fresh case-disjoint experiment are
-different studies. Do not label the image partitions as patient-disjoint.
+The retained image partitions do not establish case- or patient-disjoint
+evaluation. The case-disjoint experiment uses a separate grouped split.
 `experiments/diagnostics/run_derm7pt_case_disjoint.py` requires the original Derm7pt case metadata and
 rebuilds the affected training statistics for its new grouped split.
 Keep any restricted image-membership or patient metadata outside the public repo.

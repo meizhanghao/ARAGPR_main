@@ -9,11 +9,10 @@ originate from the official implementation by Katharina Prasse and Patrick Knab:
 - License: MIT; the upstream notice is retained in `licenses/DCBM-MIT.txt`.
 - Paper: https://proceedings.mlr.press/v267/prasse25a.html
 
-This snapshot includes local extensions for shape targets, residual fitting,
+ARAGPR extends that implementation with shape targets, residual fitting,
 signed attribution, controls and exports. It is not an official DCBM release.
-Local source hashes and the release adaptations are listed in
-`docs/SOURCE_MANIFEST.json`; source-project folders and machine-specific paths
-are omitted from that manifest.
+Source attribution, origin hashes, and implementation adaptations are recorded
+in `docs/SOURCE_MANIFEST.json`.
 
 ## External models and libraries
 

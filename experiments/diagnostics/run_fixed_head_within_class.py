@@ -1,7 +1,7 @@
 """Evaluate original/global/within-class teachers with an unchanged classifier.
 
-This runner replays saved diagnostic models. It never fits parameters, changes
-the Decoded cohort or class contrast, or modifies manuscript/server numbers.
+This runner replays saved diagnostic models with fixed parameters, evaluation
+cohorts, and Decoded class contrasts.
 ``evaluate_controls`` is also used by the case-disjoint pilot.
 """
 from __future__ import annotations
@@ -201,7 +201,7 @@ def write_summary(output, rows):
     write_csv(output / "paired_differences_summary.csv",
               aggregate(differences, ["dataset", "control", "cohort"]))
     lines = ["# 固定头Teacher：全局与同类内打乱", "",
-        "以下是本次实际回放的本地模型结果，不能与论文服务器汇总拼成同一次运行。",
+        "统计基于保存的固定模型及其输入缓存，模型来源与配置见protocol.json。",
         "只评估有效Teacher图像；样本集合、原Decoded类别对、head、偏置、eta和标准化固定。",
         "每个模型先对置换平均，再跨模型种子计算样本标准差；单个模型不报告种子标准差。", "",
         "| 数据集 | 条件 | 纠错保留/% | 方向一致/% | Top-3重叠/% |", "|---|---|---:|---:|---:|"]

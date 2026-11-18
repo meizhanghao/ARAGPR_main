@@ -1,8 +1,8 @@
 # Entry-point map
 
 Run these commands from the repository root. The root `train.py` is the main
-training entry. Supporting programs use `python -m package.module`, so imports
-resolve after reorganization. Add `--help` to inspect an available CLI.
+training entry. Supporting programs use `python -m package.module` to resolve
+package imports. Add `--help` to inspect an available CLI.
 Datasets, masks, cached features and checkpoints must be prepared separately.
 
 ## Main training and baselines
@@ -38,8 +38,8 @@ before use; they are not the primary reproduction entry points.
 | Mechanism summary | `python -m experiments.diagnostics.summarize_derm7pt_mechanism` |
 | Pairing summary | `python -m experiments.diagnostics.summarize_pairing_controls_20261020` |
 
-Summary modules retain historical input defaults; review them before running.
-Use a fresh output directory for each new experiment.
+Summary modules accept saved experiment outputs. Set their input paths and use
+a separate output directory for each experiment.
 
 ## Preprocessing
 
@@ -86,11 +86,14 @@ your training references. It does not call a VLM API. See
 python train.py --project-root /path/to/prepared_data --dataset derm7pt --use_shape --shape_input geo --K_shape 128 --shape_mode decoded --freeze_semantic_from semantic_checkpoints/derm7pt_semantic_baseline.pt
 ```
 
-`train.py` changes the working data directory and executes `aragpr.training`,
-with the same options, model and losses as before. The residual-control runner
-also accepts `--project-root`; other diagnostics have their own cache/path
+`train.py` sets the working data directory and executes `aragpr.training`.
+The residual-control runner also accepts `--project-root`; other diagnostics have their own cache/path
 options. The path helper distinguishes the repository root from the data root.
 
+## Checkpoint compatibility
+
 Model classes under `utils/` retain their module paths for checkpoint loading.
-Other imports must use qualified paths from the new layout. The full migration
-map is in [FILE_MIGRATIONS.json](FILE_MIGRATIONS.json).
+Existing checkpoints can contain `GlobalCBM` or `SDR-CBM` identifiers. The main
+training entry is `train.py`, backed by `aragpr/training.py`. Applications that
+import experiment utilities should use the package paths listed above. A
+[filename map](FILE_MIGRATIONS.json) is available for scripts using earlier paths.

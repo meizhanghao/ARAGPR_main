@@ -345,8 +345,7 @@ def gallery(cases, recommended, counts, output):
           <h2>{cid} <small>{'优先查看' if cid in recommended_ids else ''}</small></h2>
           <p>{html.escape(case['dcbm_name'].replace('_',' '))} → {html.escape(case['sdrcbm_name'].replace('_',' '))}
           <strong class="{case['category']}">{'纠错' if case['category']=='correction' else '误改'}</strong></p>
-          <p>{sign}；前三项清晰部件 {case['top3_usable_parts']}；鸟体参考 {case['top3_bird_references']}/3。
-          {'与已选图1是同一案例。' if cid=='R44-0877' else ''}</p>
+          <p>{sign}；前三项清晰部件 {case['top3_usable_parts']}；鸟体参考 {case['top3_bird_references']}/3。</p>
           <div class="pair"><a href="cases/{cid}/input.jpg"><img class="input" loading="lazy" src="cases/{cid}/input.jpg"></a>
           <a href="panels/{cid}.png"><img class="panel" loading="lazy" src="panels/{cid}.png"></a></div>
           <p><a href="cards/{cid}.png">完整核对卡</a> · <a href="panels/{cid}.svg">可编辑面板SVG</a> ·
@@ -543,10 +542,8 @@ def main():
 误改 {counts['qualifying_harms']} 个。误改案例保留供审查，不默认推荐为成功纠错展示。
 Top-3 至少有清晰部件的纠错案例为 {counts['part_corrections']} 个。
 
-优先 R42-1425：三项训练参考均为鸟体，一项头部/喙、一项全鸟、一项前部身体，贡献两正一负。
-R44-0877 是已选图1案例，若希望两图展示同一案例可选它；其前三项均为正贡献。
-其他推荐优先覆盖不同图像和不同部件来源。名称仅用于既有人工审阅筛选，未写入面板；
-所有面板只保留 P 编号并留出后续命名位置。没有使用CLIP或LLM新增名字。
+推荐列表优先覆盖不同图像和不同部件来源，具体预测变化及贡献见对应卡片。
+筛选标签用于索引已审阅的参考内容；面板使用P编号，辅助命名作为独立步骤。
 
 panels/：符合原预留区域 3.95:4.10 比例的实测解释面板，PNG + 可编辑、内嵌素材的SVG。
 cards/：输入、预测、训练原图位置、局部图、轮廓、面板的完整核对图。
@@ -560,9 +557,7 @@ manifest.json：来源哈希、筛选口径、数量和闭合检查；runs.json�
 面板贡献公式中的响应是分类头使用的标准化输入；导出权重差已含 eta，不再二次相乘。
 Other包含其余125项，Bias单列；所有margin在舍入前闭合。正贡献不等于高相似度。
 训练参考不是测试图像上的空间定位；一个参考图可辨部件不代表整个形状簇的解剖命名。
-这些局部检查点的个案也不能代替服务器末15轮均值或总体性能结果。
-
-仅新建筛选与预览输出；未训练、未分割，未修改论文、数据集、模型、原图1或原图2预案。
+这些单检查点案例用于定性检查，其频率及总体分类效果需结合完整测试结果评估。
 """
     (args.output/"README_zh.md").write_text(readme, encoding="utf-8")
     print(json.dumps(counts, ensure_ascii=False), flush=True)

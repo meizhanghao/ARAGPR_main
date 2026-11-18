@@ -682,15 +682,15 @@ def run(args):
         "这是展示样例筛选，不是模型选参或总体解释性评估。没有替换任何样例的高贡献坐标。\n\n"
         "T 是已有论文解释导出；R42/R43/R44 是此前保存的真实配对对照模型的逐样本回放，不是新训练。"
         "各运行的参数、teacher bank、预测文件与校验见 runs.json / replay_checks.json。"
-        "这些本地单检查点预测不能替代论文服务器末 15 轮平均准确率。相同 P 编号跨运行须结合参考 ID 判断，不能直接混用。\n\n"
+        "预测来自各运行选定的单检查点。相同P编号在不同原型库中可能对应不同参考区域，需结合reference_id读取。\n\n"
         "卡片左侧为 DCBM 在相同类别对上支持原始预测的语义参考；右侧为最终类别相对原始类别的有符号形状贡献。"
         "它们是训练参考，不是在测试图上定位到的部件。原图矩形仅用于核查训练参考区域。"
-        "正文未来可用 Training shape reference / Head-and-breast exemplar 等表述。"
+        "区域名称用于描述所展示训练参考的可见内容。"
         "头部、喉部、腿足等名称只描述所展示训练区域；不能据此将整个几何原型命名为一个已验证的解剖学概念。\n\n"
         "全部坐标、偏置和 Other 均保留；贡献经过乘积与求和闭合校验。CLIP 仅给候选文字排序，"
         "分数不是概率，未自动变成核实名称，也不参与分类。review_labels_used.json 可在人工审阅后继续编辑，重新导出到另一个新目录。\n\n"
         "cards/ 为完整预选卡片；cases/ 含原输入、原 CSV 与完整类别分数；references/ 含彩色区域、二值 mask、"
-        "核验轮廓、训练原图、原图位置和来源；sheets/ 为全部参考图集。原有模型、数据集、分割结果及论文未改动。\n",
+        "核验轮廓、训练原图、原图位置和来源；sheets/ 为全部参考图集。\n",
         encoding="utf-8")
     inputs = ledger.verify()
     write_json(out / "source_integrity.json", {"all_input_files_unchanged": True, "files": inputs})

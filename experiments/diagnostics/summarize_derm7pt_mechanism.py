@@ -1,4 +1,4 @@
-"""Audit and summarize the completed local Derm7pt mechanism pilot."""
+"""Audit and summarize saved Derm7pt pairing and perturbation diagnostics."""
 import csv
 import json
 from pathlib import Path
@@ -178,16 +178,16 @@ def run():
         "models":[{"path":str(path),"sha256":sha256(path)} for path in FIT.rglob("selected_model.pt")],
         "input_hash_validation_sources":[str(FIT/"protocol.json"),str(EDIT/"protocol.json")],
         "immutable_files_verified_after_analysis":len(hash_checks),
-        "paper_data_policy":"Only Table E7 expanded. Local diagnostic results did not replace manuscript server accuracy values."}
+        "paper_data_policy":"Report scope is limited to the saved input runs recorded in this manifest."}
     write_json(EDIT/"final_verification.json",audit)
     report=["# Derm7pt 形状机制诊断结果", "",
-        "真实配对能更好地恢复现有形状 teacher，但这次实验没有证实其最终分类准确率稳定优于打乱配对。图像扰动显示部分方向一致性，同时也显示对外观变化的敏感性。因此，目前结果支持‘部分形状目标可被线性恢复’，不能把分类收益全部归因于病灶几何。", "",
+        "本报告比较配对监督、打乱监督及受控图像变化，分别记录分类、teacher重建和响应敏感性。完整配置、模型来源和输入核验见各运行的protocol.json及final_verification.json。", "",
         "## 实验设计", "",
         "固定同一 Frozen DCBM 检查点、CLIP 特征、训练/验证/测试成员、geo11 teacher bank 和 128 维 affine decoder。种子为 42、43、44，改变 decoder/head 初始化、训练随机顺序及配对打乱；没有重新训练原始 DCBM 或重建原型库。三个组分别为：真实配对；仅在训练集中对完整 teacher 向量打乱图像对应；在每个训练类别内打乱完整向量。不是打乱 128 个坐标的顺序：单纯重排坐标再拟合线性头只是重命名，不能检验配对机制。", "",
         "各组 decoder 均使用同一未打乱的有效验证 teacher，以相同 SmoothL1/AdamW 训练规则选择最低验证损失的检查点；只在 926 张有效训练图像上监督 decoder。分类头使用全部 1,231 张训练图像，同一训练集标准化规则、CE+L1、batch64、lr0.001、最多100轮、patience30，分别拟合 eta={0.1,0.25,0.5,0.75,1.0}，按验证准确率选择。decoder 最多300轮。测试成员和测试标签不参与训练、标准化或选参。", "",
-        "这次是本地‘验证选择单检查点’诊断，论文是服务器最后15轮测试准确率均值，两者不是同一统计量。本地固定 Frozen 为 76.7263%，不得替换论文 Derm7pt Frozen=74.76%。下面的 ± 是三个实际 decoder/head 种子结果的样本标准差，不是末轮波动，也不是完整 DCBM 训练流水线的不确定性。", "",
+        "分类结果使用验证集选定的单检查点；±表示decoder/head重复拟合的样本标准差。该统计条件于固定Frozen模型，不表示末轮波动或完整训练流水线的不确定性。", "",
         "## 分类与重建结果", "",
-        "| 配对方式 | 全部391张测试图像，准确率均值±标准差 | 有效teacher 290张 | 缺失teacher 101张 |",
+        "| 配对方式 | 全测试集准确率均值±标准差 | 有效teacher子集 | 缺失teacher子集 |",
         "|---|---:|---:|---:|" ]
     for mode in models:
         selected=summary[summary["mode"]==mode].set_index("subset")
@@ -198,16 +198,16 @@ def run():
     for members in (np.ones(len(y),bool),covered,~covered):
         baseline.append(100*float((frozen[members]==y[members]).mean()))
     report.append(f"| 固定 Frozen | {baseline[0]:.2f}% | {baseline[1]:.2f}% | {baseline[2]:.2f}% |")
-    report += ["", "真实配对减全局打乱的三个种子平均差为 +0.171 个百分点。对固定预测按病例成组 bootstrap 的95%区间为 [−1.364, +1.727] 个百分点，跨过0；真实配对减同类打乱为0.000，区间 [−1.705, +1.705]。它们是当前固定模型和保留分区下的条件性描述，不是独立患者泛化或完整训练种子总体的置信区间。每个种子的 discordant pairs、描述性 McNemar 检验及病例 bootstrap 均保存在 paired_comparisons.csv，不能从这三次运行宣称等效或没有任何收益。", "",
-        "| 配对方式 | 290张有效teacher测试图像的平均 R² | 平均 Pearson |", "|---|---:|---:|"]
+    report += ["", "配对准确率差值、discordant pairs、McNemar检验及病例成组bootstrap结果见paired_comparisons.csv。区间描述固定模型和保留分区下的条件性变化，不表示独立患者推广或完整训练流水线的不确定性。", "",
+        "| 配对方式 | 有效teacher测试子集的平均 R² | 平均 Pearson |", "|---|---:|---:|"]
     for mode in models:
         part=fidelity[(fidelity["mode"]==mode)&(fidelity.split=="test")]
         report.append(f"| {LABELS[mode]} | {part.r2_uniform.mean():.3f} | {part.pearson_defined_mean.mean():.3f} |")
-    report += ["", "真实配对的重建明显较好，但分类均值接近打乱组。这表明‘能恢复部分 teacher’与‘分类净收益依赖正确形状配对’是不同命题；本次只支持前者。不能据此断言收益必定来自纹理、背景或某一种伪影。", "",
+    report += ["", "目标重建与分类回答不同问题：R²和Pearson衡量teacher恢复，分类对照衡量配对方式对最终决策的作用。两者应结合报告，单独的重建优势不确定分类分支使用的具体图像属性。", "",
         "## 无需重新分割的受控图像变化", "",
-        f"原先290张有效teacher测试图像全部尝试；273张通过严格素材核验和编辑有效性检查，17张在推理前排除。完成4种局部形变、2种区域内部模糊、2种区域外模糊，加上原图共2,457个输入。273张中临床照片142张、皮肤镜图129张，另2张在原始元数据中同时列入两种模态，未强行指定模态。", "",
+        "对有效teacher测试图像进行素材核验和编辑有效性检查，比较局部形变、区域内部模糊与区域外模糊。纳入图像、排除原因和模态记录分别保存在运行输出中。", "",
         "旧 SAM2 输出缺少 bbox 的，使用配对 RGB crop 在原图中做唯一模板匹配：相关系数至少0.98、与非邻近候选峰值差至少0.005、像素MAE不超过6。所有纳入图像必须重现原来的geo11描述子与缓存teacher；完整配准记录和17张排除原因分别保存在 mask_registration.csv、excluded_images.csv。局部形变把同一光滑位移场同时施加给RGB图像和全部已有有效mask，不重新调用SAM；Jacobian必须为正。外观模糊使用固定mask，保留轮廓边界带像素。", "",
-        "原图与编辑图均重新使用本地 CLIP ViT-L/14 编码，以新编码的原图作为差分基准。新原图与缓存特征最低余弦为0.999973，最大相对差为0.007372；没有把旧缓存与新运行的数值漂移计作图像扰动。计算 teacher/decoded 响应变化及固定‘malignant减benign’分类边际，保存语义、残差、最终边际；逐样本核对三者加和闭合。", "",
+        "原图与编辑图均使用同一CLIP ViT-L/14重新编码，以重新编码的原图作为差分基准。计算teacher/decoded响应变化及固定‘malignant减benign’分类边际，保存语义、残差和最终边际，并逐样本核对加和闭合。", "",
         "| 编辑 | teacher变化RMS | 真实配对decoded变化RMS | teacher与decoded变化方向的平均余弦 |",
         "|---|---:|---:|---:|" ]
     variant_names={"warp_x_010":"局部横向形变0.10","warp_y_010":"局部纵向形变0.10",
@@ -217,25 +217,22 @@ def run():
     for _,row in sensitivity[sensitivity["mode"]=="paired"].iterrows():
         cosine="不定义（teacher不变）" if pd.isna(row.mean_cosine_seed_average) else f"{row.mean_cosine_seed_average:.3f}"
         report.append(f"| {variant_names[row.variant]} | {row.teacher_delta_rms:.3f} | {row.decoded_delta_rms:.3f} | {cosine} |")
-    report += ["", "形变的方向余弦为弱正值，支持一定程度的方向一致性，但不是接近1的强跟随；病例bootstrap与打乱组的对照保存在 directional_alignment_comparisons.csv。外观模糊下teacher逐位完全不变，decoded仍明显变化，表明解码坐标没有对纹理和上下文实现不变性。局部形变也会移动纹理和邻域、产生重采样效应；不同编辑的感知强度未匹配，因此不能用变化幅度的大小直接比较几何与纹理的因果重要性，也未将编辑图像当作具有已验证诊断标签的新准确率测试集。", "",
-        f"另一个重要限制是可编辑区域大小：273张中只有{mask_stats['n_outside_editable_at_least_10pct']}张的‘mask区域外’超过整图10%，其余173张不足10%；中位数仅{100*mask_stats['outside_editable_fraction_median']:.2f}%。这是因为不少保留SAM区域包含大范围皮肤或近整幅画面，并非专家标注的病灶mask。不能把区域内部/区域外直接解释为病灶/背景。对至少10%区域外可编辑图像的补充分层只依据像素面积，记录在 editable_area_diagnostics.json，不作模型选择。", "",
-        "## 可支持的论文表述", "",
-        "> Paired supervision improves recovery of the shape-derived teacher targets relative to shuffled correspondence. In the retained Derm7pt diagnostic, however, classification accuracy does not consistently distinguish paired from shuffled supervision, and decoded responses remain sensitive to appearance changes that leave the teacher fixed. These results support partial shape decodability without establishing that the classification gains are caused specifically by lesion geometry.", "",
-        "不建议现在写‘已证明分类收益来自纯形状’或‘已经排除背景、纹理’。若未来要强化该结论，首先应针对论文服务器的同一检查点和15轮统计规则重放匹配对照，并处理病灶区域与近整图区域的混合；这次本地诊断的数值不能并入服务器主表冒充同一评估口径。", "",
-        "保留分区按case_num核验仍存在跨分区同病例：train/val 229个，train/test 239个，val/test 80个。本文本地测试391张图像对应356个病例。病例bootstrap保留同一病例在测试集中两种图像的成组相关，但不能消除训练/测试共享病例的影响。", "",
-        "## E7 与文件验证", "",
-        "E7已扩展到CUB、Places365、Derm7pt、BUS-UCLM、ISIC-2019。新增Places365 train/val/test有效率72.78%/72.63%/72.63%；BUS-UCLM三者均100%；ISIC-2019为91.06%/90.37%/93.01%。统计来自本地保留缓存，表中明确availability不代表分割质量。PDF与Word均为23页，E7位于第22页。主实验准确率未用本地新结果替换。", "",
-        "9个已序列化decoder/head在全部原始分区上回放通过；9个扰动模型另作独立回放，分类边际加和闭合；所有读取的原图、mask、crop、特征缓存、检查点hash保持不变。关键不变量测试覆盖：训练内置换、同类置换约束、重复模态元数据、严格crop位置核验、恒等形变、非折叠形变、外观编辑保持mask与边界不变。完整核验见 final_verification.json。", "",
+    report += ["", "方向一致性及与打乱组的病例bootstrap比较见directional_alignment_comparisons.csv。外观模糊保持teacher固定，可用于检查decoded响应对外观变化的敏感性。局部形变同时移动纹理和邻域并产生重采样效应；不同编辑的感知强度未匹配，其变化幅度不能直接解释为几何与纹理的因果重要性。编辑图像不作为具有已验证诊断标签的新准确率测试集。", "",
+        f"区域外可编辑面积至少占整图10%的图像有{mask_stats['n_outside_editable_at_least_10pct']}张，区域外可编辑面积比例的中位数为{100*mask_stats['outside_editable_fraction_median']:.2f}%。SAM候选区域并非专家病灶标注，区域内部/外部不直接等同于病灶/背景。按可编辑面积进行的补充分层见editable_area_diagnostics.json。", "",
+        "## 解释范围与核验", "",
+        "配对监督、目标重建和图像扰动检验互补的对应关系。任何单项结果均不单独识别纯轮廓因果作用；观察到的差异需结合配对对照、区域内容和编辑有效性解释。", "",
+        "病例bootstrap保留同一病例图像的成组相关性，但不能消除训练与测试共享病例的影响。分区重叠和病例统计见运行记录。", "",
+        "回放检查逐图预测和分类边际闭合，文件哈希检查输入图像、mask、crop、特征及检查点的一致性。完整核验见final_verification.json。", "",
         "## 复现与结果位置", "",
-        "使用现有ML环境，不需要安装新模型或生成mask。必须指定新的输出目录，避免覆盖本次结果。", "", "```powershell",
+        "在仓库根目录执行，输入素材和依赖见docs/DATA.md；各次实验使用独立输出目录。", "", "```powershell",
         r"Set-Location '.'",
-        r"& 'python' -m unittest test_shape_mechanism -v",
-        r"& 'python' run_derm7pt_mechanism.py --output outputs/derm7pt_mechanism_new_run",
-        r"& 'python' run_derm7pt_perturbations.py --models outputs/derm7pt_mechanism_new_run --output outputs/derm7pt_perturbations_new_run",
+        r"python -X utf8 -m unittest tests.test_shape_mechanism -v",
+        r"python -m experiments.controls.run_derm7pt_mechanism --output outputs/derm7pt_mechanism_new_run",
+        r"python -m experiments.diagnostics.run_derm7pt_perturbations --models outputs/derm7pt_mechanism_new_run --output outputs/derm7pt_perturbations_new_run",
         "```", "",
         f"分类输出：`{FIT}`", "", f"扰动输出：`{EDIT}`", "",
         "主要CSV：classification_summary.csv（实际种子均值/标准差）；classification_groups.csv（逐种子、群体及correction/harm）；decoder_fidelity.csv（重建）；paired_comparisons.csv（成对分类比较）；per_image_sensitivity.csv（逐图响应与分类边际变化）；sensitivity_seed_averaged.csv（先按图像聚合种子后的扰动汇总）。", "",
-        "示意图：mechanism_summary.png / mechanism_summary.pdf；左侧点为各个种子、误差棒为样本标准差，右侧为先按图像平均种子后按病例bootstrap的95%区间。图像编辑对照：perturbation_examples.png 和 examples/。这些诊断结果保存在本地，未加入论文新的结果表。", ""]
+        "示意图：mechanism_summary.png / mechanism_summary.pdf；左侧点为各个种子、误差棒为样本标准差，右侧为先按图像平均种子后按病例bootstrap的95%区间。图像编辑对照：perturbation_examples.png和examples/。", ""]
     REPORT.write_text("\n".join(report),encoding="utf-8")
     audit["report"]={"path":str(REPORT),"sha256":sha256(REPORT)}
     write_json(EDIT/"final_verification.json",audit)

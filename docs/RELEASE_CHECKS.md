@@ -1,56 +1,59 @@
-# Source snapshot checks
+# Verification
 
-Prepared on 2026-11-17. The local verification environment is recorded in
-`TEST_ENVIRONMENT.json`; it is not a dependency lockfile.
+The checks below cover implementation behavior, command-line interfaces, and
+documentation assets. Dataset experiments require the inputs and checkpoints
+described in [DATA.md](DATA.md).
 
-- All 65 tests now reside under `tests/` and passed after reorganization.
-  On Windows, use `python -X utf8 -m unittest discover -s tests -v` for
-  the legacy Unicode log messages.
-- The combined 65-test suite also passed with CLIP, SAM2, wandb and imbalanced-learn
-  imports deliberately unavailable, checking the core-only dependency boundary.
-- 22 moved/main training, diagnostic, export and plotting entry points
-  returned CLI help. The main launcher also passed with a separate working
-  data directory, leaving that directory unchanged.
-- All 83 exported Python source files passed syntax parsing.
-- The NumPy example exported all 128 synthetic coordinate contributions and
-  verified class-margin closure to floating-point precision.
-- Both the full 128-coordinate profile and Top-5 horizontal contribution bars
-  were generated successfully using Matplotlib/SVG. Generated check outputs are
-  removed from this source snapshot.
-- Module imports, worker subprocess invocations and code-hash paths were updated
-  to the new layout. Core model module paths under `utils/` were retained.
-- Source provenance retains the original hashes and paths; current release
-  hashes were refreshed. This reorganization only changed the public checkout.
+## Run the checks
 
-## Documentation figures
+From the repository root:
 
-- Seven standalone manuscript figure PDFs were rendered to complete-page PNGs.
-  Their source hashes remained unchanged; image hashes and dimensions are in
-  `assets/figures/manifest.json`.
-- The exported figures were visually inspected. The README embeds the framework,
-  selected prototype clusters, and complete-profile/Top-5 audit; the extended
-  `VISUAL_GUIDE.md` explains all seven figures and their code entry points.
-- Relative Markdown links and image targets were checked locally.
-- Only the seven named figure PNGs are allowed by `.gitignore`; unrelated image
-  files and raw data banks remain excluded.
-- The optional figure-export CLI and Python syntax were checked. Documentation
-  rendering dependencies are listed separately in `requirements-docs.txt`.
+```bash
+python -m aragpr doctor
+python -X utf8 -m unittest discover -s tests -v
+python -m aragpr demo --output outputs/synthetic_demo
+```
 
-These are implementation and packaging checks, not new dataset experiments or
-independent reproduction of the manuscript's server-reported accuracy rows.
-Full training requires the documented datasets, embeddings, masks and checkpoints.
-The checks above were repeated locally for this reorganization where indicated.
-Remote workflow results are reported separately in the Actions tab.
+The synthetic demo exports all 128 coordinate contributions and verifies that
+the coordinate terms, bias, and base margin sum to the final margin. The test
+suite runs without downloading datasets or model weights.
 
-`SOURCE_MANIFEST.json` records the origin hashes and adaptations of copied files.
-`RELEASE_FILES.sha256` lists the public source snapshot files, excluding itself
-and local Git metadata.
+## Recorded implementation results
 
-## Auxiliary naming documentation
+The implementation checks performed on 2026-11-17 recorded:
 
-- Added a GPT-4o selection/refinement/abstention prompt and empty UTF-8 CSV/JSON
-  record templates under `prototype_naming/`.
-- Template JSON parsed successfully. The templates contain no claimed model
-  execution date, backend version, CLIP score or VLM naming result.
-- No VLM API was called during repository reorganization.
-- `FILE_MIGRATIONS.json` maps the 40 relocated source files to their new paths.
+- All 65 tests passed, including a run with CLIP, SAM2, wandb, and imbalanced-learn
+  imports unavailable to check the core dependency boundary.
+- 22 training, diagnostic, export, and plotting entry points returned CLI help.
+  The main launcher also accepted a separate working data directory.
+- All 83 Python source files passed syntax parsing.
+- The synthetic example verified class-margin closure to floating-point precision.
+- Matplotlib generated both a full 128-coordinate profile and Top-5 horizontal
+  contribution bars in SVG format.
+
+The environment for these checks is recorded in
+[TEST_ENVIRONMENT.json](TEST_ENVIRONMENT.json). Continuous-integration results
+are available in the repository's
+[Actions tab](https://github.com/meizhanghao/ARAGPR_main/actions).
+
+## Documentation and naming assets
+
+The [visual guide](VISUAL_GUIDE.md) includes seven complete manuscript figures
+and their code entry points. Figure source hashes, exported-image hashes, and
+dimensions are recorded in [the figure manifest](assets/figures/manifest.json).
+Figure exports and relative Markdown links were checked. Optional rendering
+dependencies are listed in `requirements-docs.txt`.
+
+The [naming guide](prototype_naming/README.md) provides a GPT-4o selection prompt
+and UTF-8 CSV/JSON templates. Template JSON was checked for valid syntax. Naming
+records are generated separately when the workflow is run on prepared references.
+
+## File integrity and compatibility
+
+- [SOURCE_MANIFEST.json](SOURCE_MANIFEST.json) records source attribution,
+  origin hashes, and implementation adaptations.
+- [RELEASE_FILES.sha256](RELEASE_FILES.sha256) lists SHA256 hashes for the
+  distributed files, excluding itself and Git metadata.
+- [FILE_MIGRATIONS.json](FILE_MIGRATIONS.json) maps earlier script filenames to
+  their package paths. Model modules under `utils/` retain their paths for
+  existing checkpoint loading.

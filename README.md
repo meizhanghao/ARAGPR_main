@@ -25,10 +25,6 @@ visual references; they do not localize evidence in a test image.
 `decoded` inference uses image embeddings without test masks. `oracle` is the
 legacy command-line name for **Direct teacher**, a mask-dependent diagnostic.
 `decoded_rel` is the optional validation-correlation-weighted variant.
-Legacy model classes such as `GlobalCBM` and `SDR-CBM` identifiers remain in
-the implementation. The model modules under `utils/` retain their paths for
-existing checkpoint loading; the former `cancha_cub.py` implementation is now
-`aragpr/training.py`, reached through `train.py`.
 
 ### Architecture: learn coordinates, then inspect the added scores
 
@@ -80,7 +76,7 @@ python -m pip install -r requirements.txt
 python -m aragpr doctor
 ```
 
-CLIP image/text encoding, SAM2 segmentation, and older baseline scripts have
+CLIP image/text encoding, SAM2 segmentation, and baseline runners have
 additional dependencies in `requirements-optional.txt`. Existing embeddings and
 masks can be reused without installing or running SAM2. SAM2 is installed from
 its official repository; a bundled copy of its source and weights is not included.
@@ -92,8 +88,8 @@ python -X utf8 -m unittest discover -s tests -v
 python -m aragpr demo --output outputs/synthetic_demo
 ```
 
-The demo exports an explicitly synthetic 128-coordinate CSV and verifies margin
-closure. It does not report experimental accuracy or reproduce a manuscript row.
+The demo uses synthetic inputs to export all 128 coordinate contributions and
+verify class-margin closure. It runs without datasets or trained checkpoints.
 
 The public NumPy interface also accepts logits from other frozen classifiers:
 
@@ -111,11 +107,10 @@ unchanged predictions have a zero contrast. Explicit class indices are supported
 ## Prepare inputs
 
 Obtain the datasets from their original providers and prepare the files described
-in [docs/DATA.md](docs/DATA.md). Raw datasets, standalone region/mask banks,
-embeddings, model weights, experiment run artifacts, and source-project Git
-history are not bundled. The selected manuscript illustrations under
-`docs/assets/figures/` are documentation assets. Five class vocabularies are
-supplied under `data/classes/`.
+in [docs/DATA.md](docs/DATA.md). Training requires separately prepared images,
+region masks, embeddings, and base checkpoints. Five class vocabularies are
+supplied under `data/classes/`; the illustrations under `docs/assets/figures/`
+provide examples of the method and its outputs.
 
 The default layout is relative to the repository root. To keep data elsewhere,
 pass `--project-root /path/to/prepared_data` to `train.py` and
@@ -139,11 +134,12 @@ python train.py --dataset derm7pt --use_shape --shape_input geo \
   --freeze_semantic_from semantic_checkpoints/derm7pt_semantic_baseline.pt
 ```
 
-Use `python train.py --help` for the original training options, including the
+Use `python train.py --help` for training options, including the
 explanation-output directory and sample indices. On PowerShell, put commands on
 one line or use PowerShell's continuation character rather than Bash `\`.
-Without `--freeze_semantic_from`, the original runner fits a semantic base and
-writes its checkpoint; use a separate working data directory for a new base fit.
+Without `--freeze_semantic_from`, the runner fits and saves a semantic base
+before training the shape branch. Prepared data can be stored separately using
+`--project-root`.
 
 ## Residual controls and cached diagnostics
 
@@ -172,19 +168,19 @@ python -m experiments.diagnostics.run_fixed_head_within_class --help
 python -m experiments.baselines.run_linear_probe_shape_transfer --help
 ```
 
-Choose a new output directory for each diagnostic run. Historical default names
-in supporting runners identify the original cache layout, not downloadable
-bundled experiments. Pass explicit paths when reproducing a new experiment.
+Use a separate output directory for each diagnostic run, and pass the paths to
+the prepared inputs, teacher cache, and saved models explicitly.
 The ordinary linear-base runner uses a fitted probe and a saved shape decoder;
 it does not require a semantic concept bank.
 
 ## Reporting and scope
 
-The main manuscript reports final-15-epoch accuracy means; several diagnostics
-instead use validation-selected, fixed checkpoints and independent branch seeds.
-These are different aggregation protocols. The provided diagnostic summaries
-must not be relabeled as the main table's epoch means. Checkpoint sequences and
-server experiment artifacts are not bundled with this source release.
+The main classification results use the arithmetic mean of test accuracy over
+the final 15 training epochs. Fixed-model diagnostics use validation-selected
+checkpoints; pairing studies repeat branch fitting with different seeds.
+Reproducing an epoch mean requires the corresponding checkpoint sequence,
+whereas a fixed-model diagnostic requires the selected model and its input cache.
+See [Experiment protocols](docs/PROTOCOLS.md) for the aggregation rules.
 
 Test targets are used only for the explicitly mask-dependent diagnostics.
 Keep the head, scale, standardization, and class contrast fixed for Teacher
@@ -194,18 +190,16 @@ The retained medical partitions have the limitations discussed in the manuscript
 
 L1 regularization does not guarantee exact zeros. Algebraic closure and visual
 references do not, by themselves, establish a purely geometric causal mechanism.
-Auxiliary prototype names have no role in training, prediction, or attribution
-arithmetic. The naming pilot supplies CLIP candidate rankings; choosing a VLM
-and retaining its prompts/outputs is a separate naming step.
 
 ## Auxiliary prototype naming
 
-The CLIP pilot is in `tools/naming/`. The [naming documentation](docs/prototype_naming/README.md)
-provides a GPT-4o selection prompt and empty CSV/JSON record templates for the
-CLIP Top-3 plus VLM workflow. Fill in the actual model identifier or access date,
-input references, vocabulary, rankings, rendered prompt and raw response when
-running it. These files are templates, not executed naming results. Auxiliary
-names do not alter model training, prediction or attribution scores.
+The [naming guide](docs/prototype_naming/README.md) describes CLIP Top-3 candidate
+ranking followed by GPT-4o visual selection, refinement, or abstention. The CLIP
+ranking tool is in `tools/naming/`; the GPT-4o prompt and CSV/JSON record
+templates are in `docs/prototype_naming/`. Each naming run records its model,
+input references, vocabulary, rankings, prompt, and response. The CLIP tool does
+not invoke a VLM service. Auxiliary names help readers inspect the references
+and have no role in training, prediction, or attribution scores.
 
 ## Project layout
 
@@ -223,19 +217,18 @@ tools/naming/            CLIP candidate-ranking pilot
 tools/plotting/          Contribution plots and documentation figure exports
 data/                    Class vocabularies and region/embedding adapters
 tests/                   Dataset-free regression tests
-docs/                    Input formats, protocols, migration map and provenance
+docs/                    Input formats, protocols, visual examples and provenance
 docs/prototype_naming/   GPT-4o prompt and empty reproducibility record templates
 ```
 
 Supporting commands use `python -m package.module` from the repository root.
-See the [entry-point map](docs/ENTRY_POINTS.md) for runnable commands and the
-[path migration list](docs/FILE_MIGRATIONS.json) for previous filenames.
+See the [entry-point map](docs/ENTRY_POINTS.md) for commands and checkpoint
+compatibility details.
 
 ## Citation and acknowledgements
 
-Use `CITATION.cff` for the current manuscript title and authors. Publication
-identifiers will be added when available. The DCBM platform and data utilities
-adapt the [official DCBM implementation](https://github.com/KathPra/DCBM):
+Citation metadata is provided in [CITATION.cff](CITATION.cff). The DCBM platform
+and data utilities adapt the [official DCBM implementation](https://github.com/KathPra/DCBM):
 
 ```bibtex
 @inproceedings{prasse2025dcbm,

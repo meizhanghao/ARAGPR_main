@@ -217,14 +217,14 @@
       "path": "tools/references/run_cub_figure2_candidates.py",
       "source_sha256": "5bb545a7da1b1a105021e5165f233a5468a1c48484df76e5f42160af8605f8e7",
       "adapted": true,
-      "release_sha256": "7af17cee2d19bd4258c01aee9b2b319d082ff2687a476911849a6efcec36a85c",
+      "release_sha256": "6170732b113bac239ec53054c43761490aa8523c32eba5051419f780323dcc2d",
       "source_relative_path": "run_cub_figure2_candidates.py"
     },
     {
       "path": "tools/references/run_cub_figure_candidates.py",
       "source_sha256": "00e3c114a89b1896e352565491fbfb35cca21b25944a73f7454d590988648b11",
       "adapted": true,
-      "release_sha256": "4a62399721298f8e156ff729d9e28fc1e9b9f00b0597a7103e31fdba11c43766",
+      "release_sha256": "a6a3e592c5a162ceab1a946a5b3151ff232e6a6a85c137c60aecd12989c0af63",
       "source_relative_path": "run_cub_figure_candidates.py"
     },
     {
@@ -245,7 +245,7 @@
       "path": "experiments/diagnostics/run_derm7pt_case_disjoint.py",
       "source_sha256": "2efbac46cd62b5571da4cd4e8404670a976629f88e6557125f5c81cd59b3448c",
       "adapted": true,
-      "release_sha256": "b3b7a5f76c5d23fca17b50b5f98b21c709b6bee24754a1145087ab682779f623",
+      "release_sha256": "403e1f63be81391c7402a85ddc2186886164bb4e963e4f7c98439bea2087db54",
       "source_relative_path": "run_derm7pt_case_disjoint.py"
     },
     {
@@ -266,14 +266,14 @@
       "path": "tools/references/run_figure_case_review.py",
       "source_sha256": "d76be3ea5b7227b5466512eb47d896461f9af48b0d1b64d51eb6ac7ecba3b61e",
       "adapted": true,
-      "release_sha256": "b66c87af41f149e9a390a5805b6f5a96878a60a7ee8de95125cdd2bdb59d986b",
+      "release_sha256": "fd85a08ea9cbe27821e4b56d3feee32778985b8e4c06407ea56e729f4c199af3",
       "source_relative_path": "run_figure_case_review.py"
     },
     {
       "path": "experiments/diagnostics/run_fixed_head_within_class.py",
       "source_sha256": "8bf24ae5b1c661c8801d3e45964dd6594da023f175700bba46e643d1c51dce60",
       "adapted": true,
-      "release_sha256": "7da424c3f00689e9abb8919a2eda01cc3d51cc6374a9763ec51d0ba523fada31",
+      "release_sha256": "4fe055fa983f96c56710b3367276b8048e2557fa429f15328598ea92f4e93c19",
       "source_relative_path": "run_fixed_head_within_class.py"
     },
     {
@@ -287,7 +287,7 @@
       "path": "experiments/diagnostics/run_posthoc_shape_diagnostics.py",
       "source_sha256": "cda1efe9250662d274db5d3732e5453490ba14cec085e2071b21c99b8b4fe7b4",
       "adapted": true,
-      "release_sha256": "d0c837ea92630f3462fbdd1be656e37d414278170e7612414b638134a5deb96f",
+      "release_sha256": "b9154c1ee20aa9402e25d2697735e0e0c827f6608c8e0e8af5c5b073b370a3dc",
       "source_relative_path": "run_posthoc_shape_diagnostics.py"
     },
     {
@@ -308,14 +308,14 @@
       "path": "experiments/diagnostics/run_teacher_alignment_audit.py",
       "source_sha256": "176410118140bf289ff40a9a9e9f9f5e459ad8425258f7809fba868f483bad52",
       "adapted": true,
-      "release_sha256": "b7be60bca86da27f0170d6303a8d7aa376c846cc498adb059e0151c6be1b860a",
+      "release_sha256": "cff6c6a558631610dd3a07b633c54f3de6096f59db11ed3cb5e266227d6f47d2",
       "source_relative_path": "run_teacher_alignment_audit.py"
     },
     {
       "path": "tools/references/run_topk_reference_screen.py",
       "source_sha256": "ece56fc965efe96a62eb16710b62a23d6b90b69c1bee6e5f7d3617a761b9f554",
       "adapted": true,
-      "release_sha256": "123cc0fea0c3745d3b84dac357a08eae47b9d7f30475e08660737b4909bc6eee",
+      "release_sha256": "bf09467adf832382c81791665138f9daca9dee83d9cabdec2a3a6105dfb6d7f0",
       "source_relative_path": "run_topk_reference_screen.py"
     },
     {
@@ -329,14 +329,14 @@
       "path": "experiments/diagnostics/summarize_derm7pt_mechanism.py",
       "source_sha256": "27502926e1386767229e502c8f14c87d6fc11db346ffebb1cc6703d251dd50a7",
       "adapted": true,
-      "release_sha256": "1d7bfed1e408915a0a3e766f437ceade26fd4cdc5cfbff3ace79e59c5c8a9719",
+      "release_sha256": "baf38fbe404bc43cc136745f2b4fb85449663c1d2732560d4cec544743a10e9d",
       "source_relative_path": "summarize_derm7pt_mechanism.py"
     },
     {
       "path": "experiments/diagnostics/summarize_pairing_controls_20261020.py",
       "source_sha256": "4546323d85911880fbc86ed4b81a95ad99531f07da0ce1343e8071f53cc56e66",
       "adapted": true,
-      "release_sha256": "382c9a478385655198b951d485ee95b12e2e5dbebe787e95e7d82358f446beab",
+      "release_sha256": "08f2037343b810eb6e3415adc95aae8f4d4bda2653d0e03f7e3e518cbb36c822",
       "source_relative_path": "summarize_pairing_controls_20261020.py"
     },
     {

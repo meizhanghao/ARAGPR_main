@@ -2,11 +2,11 @@
 
 [中文说明](README_zh-CN.md) · [Entry points](../ENTRY_POINTS.md)
 
-This folder supplies a prompt and empty record templates for the workflow:
-training reference -> CLIP candidate ranking -> GPT-4o visual selection ->
-auxiliary name. It contains no executed naming results. The existing
-`tools/naming/run_shape_naming_pilot.py` implements a local CLIP-ranking pilot;
-it does not submit a GPT-4o request.
+This guide covers the workflow: training reference -> CLIP candidate ranking ->
+GPT-4o visual selection -> auxiliary name. The CLIP-ranking step is implemented
+in `tools/naming/run_shape_naming_pilot.py`. GPT-4o selection uses the supplied
+prompt and is run separately; the CLIP tool does not submit a GPT-4o request.
+Run-record templates are provided under [templates/](templates/).
 
 ## Procedure
 
@@ -24,8 +24,8 @@ it does not submit a GPT-4o request.
    Top-3 and the three image views to GPT-4o for visual selection, concise
    refinement or abstention. Save the exact prompt and original response.
 5. Save the name beside the prototype ID, linked to its reference and records.
-   Automatic selection does not require manual annotation. A later human
-   inspection can be recorded separately; do not report one unless performed.
+   Automatic selection does not require manual annotation. Optional human
+   inspection is recorded separately from the automatic output.
 
 The prompt uses observable reference content. It does not use the final class,
 contribution sign or prediction change to select a name. A reference label does
@@ -52,10 +52,10 @@ Retain all attempted prototypes, including abstentions.
 The parsed-output template does not replace the raw response. If the interface
 only exposes `GPT-4o`, record that name, the service and actual access date; leave
 an unavailable backend snapshot unset. Record parameters only when set or
-exposed. The files here are templates, not evidence of a completed run.
+exposed. Templates are populated when each naming run is executed.
 
 Publish the prompt, vocabulary, ranking/final-output records and metadata with
 the code or in a linked artifact archive. Dataset images can remain external;
 retain source keys, hashes and retrieval instructions. Keep credentials out of
-records. These templates do not retrospectively establish the provenance of
-existing figure labels.
+records. Each final name links to its own run records through the prototype and
+reference identifiers.

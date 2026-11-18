@@ -1,9 +1,8 @@
 """Read-only replay: complete affine constants and fixed-head teacher replacement.
 
-This diagnostic does not train, segment, tune, or alter existing results. It
-supports the serialized local pairing-control models, including their extra
-training-fitted coordinate scaler. Results belong to those selected checkpoints,
-not to manuscript/server last-15-epoch means.
+This diagnostic replays serialized pairing-control models, including their
+training-fitted coordinate scaler. Results use fixed selected checkpoints;
+across-model standard deviations describe repeated branch fits.
 """
 from __future__ import annotations
 
@@ -373,10 +372,10 @@ def report(out, summary, alignment, magnitude, null_summary):
     def number(row):
         return f"{row['mean_accuracy_pct']:.2f} ± {row['std_accuracy_pct']:.2f}"
     datasets = list(dict.fromkeys(r['dataset'] for r in summary))
-    lines = ["# 完整常数项与固定分类头 teacher 替换：本地诊断", "",
-        "本次只回放已保存的真实配对模型（种子42、43、44），不重新训练、不生成mask、不修改论文。",
-        "使用验证集已选定的单个检查点；均值±样本标准差来自三个已有模型，不是论文服务器末15轮均值。",
-        "本地Frozen基线与论文不同；本地分类头前另有训练拟合的坐标标准化，已完整纳入计算。", "",
+    lines = ["# 完整常数项与固定分类头 teacher 替换", "",
+        "回放已保存的真实配对模型，固定各模型的分类头、偏置、残差系数与标准化参数。",
+        "使用验证集选定检查点；均值±样本标准差来自重复的分支拟合，与末期多个epoch的平均值属于不同统计口径。",
+        "计算包含分类头之前由训练集拟合的坐标标准化。模型与输入来源见protocol.json。", "",
         "## 1. 完整常数项对照：全部测试图像", "",
         "设v=(Bh+b_dec-mu)/s，完整常数项为eta*[W*((b_dec-mu)/s)+b_head]。h=0表示训练均值嵌入。",
         "这是一项对已经拟合模型的输入依赖项消融，不是重新优化的常数分类器；特征中心不同会改变常数项定义。", "",
@@ -385,7 +384,7 @@ def report(out, summary, alignment, magnitude, null_summary):
     for ds in datasets:
         rs=[find(ds,c,'all') for c in ['frozen','head_bias_only','complete_constant','decoded_full']]
         lines.append(f"| {ds} | {rs[0]['n_images_min']} | " + " | ".join(number(r) for r in rs)+" |")
-    lines += ["", "在当前本地模型中，后置scaler按训练decoded输出拟合，而输入已按训练均值中心化；因此mu约等于b_dec，传播的decoder常数几乎被抵消，完整常数项与head bias近乎相等。",
+    lines += ["", "当后置scaler按训练decoded输出拟合，且decoder输入已按训练均值中心化时，mu与b_dec接近，完整常数项可能与head bias接近；具体差异由保存的模型参数决定。",
         "标准化原点对应训练均值，不是不存在对象。另保存raw_clip_zero_constant条件，将输入scaler的均值也展开，取原始缓存CLIP向量为零；这一参照依赖坐标原点，零向量通常不是实际图像嵌入，不能把它误当纯粹语义/几何分离。", "",
         "| 数据集 | 原始CLIP零向量处完整常数项（补充参照） |",
         "|---|---:|"]
@@ -425,7 +424,7 @@ def report(out, summary, alignment, magnitude, null_summary):
                 f"{null['mean_top3_overlap_pct']:.2f} |")
     lines += ["",
         "其他输出包含逐种子全部/有效/无效teacher群体结果、correction/harm、全部固定替换比例、逐样本贡献及严格回放验证。",
-        "不对共享病例的医学分区报告虚构的独立样本显著性结论。数据集不变，现有划分局限仍在。", ""]
+        "医学分区中的共享病例会限制独立样本推断；固定模型回放不改变原有分区的独立性。", ""]
     (out/"RESULTS_zh.md").write_text("\n".join(lines),encoding="utf-8")
 
 

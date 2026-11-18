@@ -1,7 +1,7 @@
 """Read-only audit of correction retention and fixed-contrast contribution alignment.
 
-Reuses saved local fixed-head teacher replacement outputs. No training, mask
-generation, fitted-parameter changes, or manuscript edits are performed.
+Reuses saved fixed-head teacher replacement outputs. The classifier, class
+contrast, and evaluation cohort remain fixed throughout the audit.
 """
 from __future__ import annotations
 
@@ -90,9 +90,9 @@ def make_report(out,rows,summary,differences):
         mean,sd=row['mean_'+metric],row['std_'+metric]
         return 'N/A' if mean is None else f'{mean:.2f} ± {sd:.2f}' if sd is not None else f'{mean:.2f}'
     datasets=list(dict.fromkeys(r['dataset'] for r in rows))
-    text=['# Teacher替换后的纠错保留与贡献对应：本地初跑','',
-        '数据来自本地已保存模型，种子42、43、44；每种子使用验证集选定检查点。所有统计仅使用有效teacher测试图像，CUB为2260张，Derm7pt为290张。',
-        '这些模型及Frozen基线与用户提供的服务器结果不同；下列指标不能当作服务器准确率对应的机制统计。没有训练、重分割或修改论文。','',
+    text=['# Teacher替换后的纠错保留与贡献对应','',
+        '统计使用已保存模型及其验证集选定检查点，仅包含有效teacher测试图像。各数据集、种子和评价分母见下表及逐样本记录。',
+        '所有对比复用同一Frozen基准、分类头和原有类别对；指标描述这些固定模型上的对应关系。','',
         '## 指标与评价范围','',
         '- 原有纠错保留率：原来Frozen错误、Decoded正确的图像中，固定头teacher替换后仍然正确的比例。',
         '- 贡献方向一致率：固定原b=Frozen类别、f=Decoded类别，选原Decoded绝对贡献最大的3个坐标；两种贡献均非零的坐标中，符号一致的比例。',
@@ -112,18 +112,18 @@ def make_report(out,rows,summary,differences):
         if r['condition']=='paired' and r['cohort']=='all_changed':
             rate='N/A' if r['correction_retention_pct'] is None else f"{r['correction_retention_pct']:.2f}"
             text.append(f"| {r['dataset']} | {r['seed']} | {r['n_images']} | {r['n_original_corrections']} | {r['n_retained_corrections']} | {rate} |")
-    text+=['','Derm7pt前两个种子只有3张和4张原有正确纠错图像，其百分比对单张图像很敏感。不同种子的子集也不同，不能把同一测试图像跨种子重复出现当作独立病例。','',
+    text+=['','纠错保留率对较小的分母较敏感，需结合各个种子的纠错数量阅读。不同种子的子集可能不同，同一测试图像的跨种子重复不构成独立病例。','',
         '## 仅原有正确纠错图像的贡献对应','',
         '| 数据集 | 方向一致率/% | 置换参照/% | Top-3重叠率/% | 置换参照/% |',
         '|---|---:|---:|---:|---:|']
     for ds in datasets:
         a=find(ds,'paired','original_corrections');n=find(ds,'permuted_mean','original_corrections')
         text.append('| '+ds+' | '+' | '.join(number(r,m) for m in MEASURES[1:] for r in [a,n])+' |')
-    text+=['','## 应当如何判断','',
+    text+=['','## 指标解释','',
         '三个指标的理想上限都是100%。更有支持力的模式是：真实配对的纠错保留高，重要贡献同向，Top-3原型较多重合；三者相对同一模型的置换参照均有稳定优势。',
         '没有统一的“达到70%或80%即合格”阈值。纠错保留和Top-3重叠尤其需要置换参照，因为共享语义分支及固定头的权重结构本身也会产生保留或重叠。不能用均匀随机抽3个原型的理论重叠率作为这里的实际零假设。',
         '符号一致没有约束贡献幅度：即使每项正负号多半相同，幅度变化、其他坐标及偏置仍可使分类结果改变。方向一致率较高不自动意味着原有纠错保留率高。',
-        '可报告描述性均值及每种子差值；本次不以三个种子或共享病例图像声称统计显著或临床泛化。','',
+        '均值、种子间标准差和配对差值是条件于所评估模型的描述性统计；共享病例及有限重复次数限制了统计推断和临床推广。','',
         '## 文件','',
         '- metrics_summary.csv：主表与纠错子集的三种子统计。',
         '- paired_metrics_per_seed.csv：逐种子真实配对统计及原始分母。',
